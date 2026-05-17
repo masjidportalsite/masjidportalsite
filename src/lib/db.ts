@@ -1,12 +1,12 @@
 import { Pool } from 'pg';
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://dummy:dummy@localhost:5432/dummy';
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:146523c620222f20b6d056d448f4d900@4bpch3kt.ap-southeast.database.insforge.app:5432/insforge?sslmode=require';
 
 const pool = new Pool({
     connectionString,
 });
 
-if (!process.env.DATABASE_URL) {
+if (!connectionString) {
     const throwMissingDbUrl = () => {
         throw new Error('DATABASE_URL is not set in environment variables. Please check your database configuration.');
     };

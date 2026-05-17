@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { logoutAction } from './actions';
+import { BrandLogo } from '@/components/ui/brand-logo';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -73,9 +74,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="min-h-screen bg-brand-cream text-foreground flex flex-col md:flex-row font-sans">
             {/* Mobile Header */}
             <header className="flex md:hidden justify-between items-center bg-brand-emerald text-brand-cream p-4 shadow-lg sticky top-0 z-50">
-                <div className="flex items-center gap-2 font-bold tracking-wider text-lg">
-                    <span className="material-symbols-outlined text-brand-gold">mosque</span>
-                    MasjidPortal
+                <div className="flex items-center gap-2">
+                    <BrandLogo variant="full" size="sm" theme="dark" linked />
                 </div>
                 <div className="flex items-center gap-3">
                     <button
@@ -127,9 +127,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex md:w-72 bg-brand-emerald text-brand-cream p-6 flex-col h-screen sticky top-0 border-r border-[#bfc9c3]/10 shadow-xl z-20 justify-between overflow-y-auto">
                 <div className="flex flex-col gap-1">
-                    <div className="font-bold tracking-wider mb-8 text-xl border-b border-[#bfc9c3]/15 pb-5 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-brand-gold">mosque</span>
-                        MasjidPortal<span className="text-brand-gold">.</span>
+                    <div className="mb-8 border-b border-[#bfc9c3]/15 pb-5">
+                        <BrandLogo variant="full" size="sm" theme="dark" linked />
                     </div>
 
                     <nav className="flex flex-col gap-1 font-medium">

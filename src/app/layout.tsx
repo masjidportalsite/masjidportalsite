@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Masjid Portal",
-  description: "The Community Management Hub",
+  title: { default: 'MasjidPortal', template: '%s | MasjidPortal' },
+  description: 'Modern Community Management for Islamic Institutions — Members, Donations, Events, and more.',
+  keywords: ['masjid', 'mosque', 'community management', 'donations', 'events'],
+  authors: [{ name: 'MasjidPortal' }],
+  icons: {
+    icon: '/branding/favicon.svg',
+    shortcut: '/branding/favicon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -28,11 +34,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        <link rel="icon" href="/branding/favicon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>

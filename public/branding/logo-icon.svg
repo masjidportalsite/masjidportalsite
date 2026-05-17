@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Outer arch -->
+  <path d="M24 4 C12 4 4 12 4 24 L4 42 L44 42 L44 24 C44 12 36 4 24 4 Z" fill="#064E3B"/>
+  <!-- Inner arch -->
+  <path d="M24 10 C15 10 9 16.5 9 24 L9 36 L39 36 L39 24 C39 16.5 33 10 24 10 Z" fill="#0a7a5c"/>
+  <!-- Keyhole -->
+  <circle cx="24" cy="23" r="5.5" fill="#D4AF37"/>
+  <rect x="20.5" y="27" width="7" height="8" rx="1.5" fill="#D4AF37"/>
+  <!-- Crescent top -->
+  <circle cx="24" cy="4" r="4" fill="#D4AF37"/>
+  <circle cx="26.5" cy="2.5" r="3" fill="#064E3B"/>
+</svg>

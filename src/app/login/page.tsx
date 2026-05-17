@@ -2,6 +2,7 @@
 
 import React, { useActionState, useEffect } from 'react'
 import { loginAction } from './actions'
+import { BrandLogo } from '@/components/ui/brand-logo'
 
 export default function LoginPage() {
     const [state, action, isPending] = useActionState(loginAction, undefined)
@@ -15,8 +16,7 @@ export default function LoginPage() {
             <header className="fixed top-0 left-0 right-0 z-50 bg-[#f8f9ff]/70 backdrop-blur-md border-b border-[#bfc9c3]/20 shadow-sm">
                 <div className="flex justify-between items-center px-6 py-2 w-full max-w-[1440px] mx-auto">
                     <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-[#003527]">mosque</span>
-                        <span className="font-bold text-[#003527] text-xl tracking-tight">MasjidPortal</span>
+                        <BrandLogo variant="full" size="sm" theme="light" linked />
                     </div>
                     <nav className="flex items-center gap-8">
                         <a className="text-[#404944] hover:text-[#e9c349] transition-colors duration-200" href="#">Support</a>
@@ -37,6 +37,9 @@ export default function LoginPage() {
                 }}
             >
                 <div className="text-center mb-12">
+                    <div className="flex justify-center mb-6">
+                        <BrandLogo variant="full" size="lg" theme="light" linked />
+                    </div>
                     <h1 className="text-4xl font-semibold text-[#003527] mb-2 tracking-tight">Welcome Back</h1>
                     <p className="text-[#404944]">Sign in to manage your sanctuary.</p>
                 </div>

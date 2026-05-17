@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
+import { BrandLogo } from '@/components/ui/brand-logo';
 import React from 'react';
 
 export default function Home() {
@@ -24,8 +25,7 @@ export default function Home() {
       <header className="absolute top-0 left-0 right-0 z-50 bg-[#f8f9ff]/70 backdrop-blur-md border-b border-[#bfc9c3]/20 shadow-sm">
         <div className="flex justify-between items-center px-6 py-4 w-full max-w-[1440px] mx-auto">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-brand-emerald">mosque</span>
-            <span className="font-bold text-brand-emerald text-xl tracking-tight leading-none">MasjidPortal</span>
+            <BrandLogo variant="full" size="sm" theme="light" linked />
           </div>
           <nav className="flex items-center gap-8">
             <span className="hidden md:inline text-[#404944]/80 text-xs font-bold uppercase tracking-widest bg-brand-gold/15 text-brand-emerald px-3 py-1.5 rounded-full border border-brand-gold/20 shadow-sm">
@@ -66,8 +66,8 @@ export default function Home() {
                   <div
                     key={pt.name}
                     className={`flex justify-between items-center p-3.5 rounded-xl border ${pt.active
-                        ? 'bg-brand-emerald/5 border-brand-emerald/20 shadow-md translate-x-1 ring-1 ring-brand-gold/20'
-                        : 'bg-white/40 border-brand-emerald/5 hover:bg-brand-cream/50'
+                      ? 'bg-brand-emerald/5 border-brand-emerald/20 shadow-md translate-x-1 ring-1 ring-brand-gold/20'
+                      : 'bg-white/40 border-brand-emerald/5 hover:bg-brand-cream/50'
                       }`}
                   >
                     <div className="flex items-center gap-3">

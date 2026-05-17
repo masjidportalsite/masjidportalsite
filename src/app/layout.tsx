@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { BrandingProvider } from "@/components/providers/branding-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,7 +45,11 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <BrandingProvider>
+          {children}
+        </BrandingProvider>
+      </body>
     </html>
   );
 }

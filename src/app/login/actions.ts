@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import pool from '@/lib/db'
 
-export async function loginAction(state: any, formData: FormData) {
+export async function loginAction(state: unknown, formData: FormData) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 

@@ -44,7 +44,7 @@ export default async function PrayerTimesPage() {
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-[40px] font-semibold text-[#003527] tracking-[-0.02em] leading-tight">Prayer Times</h1>
-                    <p className="text-[#404944] mt-1">Daily Salat schedule for your congregation.</p>
+                    <p className="text-foreground/60 font-medium">Verify current schedule and configure congregation size limits for today&apos;s prayers.</p>
                 </div>
                 <div className="flex items-center gap-2 px-5 py-2.5 bg-[#003527]/5 border border-[#003527]/10 rounded-xl">
                     <span className="material-symbols-outlined text-[#003527] text-xl">location_on</span>
@@ -52,19 +52,22 @@ export default async function PrayerTimesPage() {
                 </div>
             </header>
 
-            {/* Today's Prayer Times — Full Cards */}
+            {/* Today&apos;s Prayer Times — Full Cards */}
             <section>
-                <h2 className="text-[12px] font-bold uppercase tracking-widest text-[#707974] mb-4">Today's Schedule</h2>
+                <h2 className="text-[12px] font-bold uppercase tracking-widest text-[#707974] mb-4">Today&apos;s Schedule</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {DAILY_PRAYER_TIMES.map((prayer) => (
                         <div
                             key={prayer.name}
                             className={`rounded-[24px] p-6 border transition-all ${prayer.active
-                                    ? 'border-[#735c00] border-2 bg-[#fed65b]/15 prayer-glow'
-                                    : 'glass-card'
+                                ? 'border-[#735c00] border-2 bg-[#fed65b]/15 prayer-glow'
+                                : 'glass-card'
                                 }`}
                         >
                             <div className="flex items-center justify-between mb-4">
+                                <div className="absolute right-0 top-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span className="material-symbols-outlined text-[16px] text-[#003527]/50 hover:text-[#003527] cursor-pointer">settings</span>
+                                </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`material-symbols-outlined text-xl ${prayer.active ? 'text-[#735c00]' : 'text-[#707974]'}`}>
                                         {prayer.icon}

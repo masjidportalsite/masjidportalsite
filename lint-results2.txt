@@ -1,0 +1,189 @@
+
+> temp-app@0.1.0 lint
+> eslint
+
+
+C:\Projects\MasjidPortalSite\src\app\dashboard\layout.tsx
+  20:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projects\MasjidPortalSite\src\app\dashboard\layout.tsx:20:13
+  18 |         const storedRole = localStorage.getItem('simulated_role');
+  19 |         if (storedRole && rolesList.includes(storedRole)) {
+> 20 |             setActiveRole(storedRole);
+     |             ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |         }
+  22 |     }, []);
+  23 |  react-hooks/set-state-in-effect
+  22:8   warning  React Hook useEffect has a missing dependency: 'rolesList'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+
+C:\Projects\MasjidPortalSite\src\app\dashboard\page.tsx
+  143:38  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Projects\MasjidPortalSite\src\app\dashboard\prayer\page.tsx
+  145:96   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  150:109  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Projects\MasjidPortalSite\src\app\layout.tsx
+  43:9  warning  Block is not recommended. See: https://nextjs.org/docs/messages/google-font-display                                                                              @next/next/google-font-display
+  43:9  warning  Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+C:\Projects\MasjidPortalSite\src\components\dashboard\settings\branding-settings.tsx
+   43:50  warning  'refreshSettings' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   50:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projects\MasjidPortalSite\src\components\dashboard\settings\branding-settings.tsx:50:13
+  48 |     useEffect(() => {
+  49 |         if (settings) {
+> 50 |             setFormData(settings);
+     |             ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  51 |         }
+  52 |     }, [settings]);
+  53 |  react-hooks/set-state-in-effect
+  190:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @next/next/no-img-element
+
+C:\Projects\MasjidPortalSite\src\components\providers\branding-provider.tsx
+  63:21  error    Error: Cannot access variable before it is declared
+
+`applyFavicon` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Projects\MasjidPortalSite\src\components\providers\branding-provider.tsx:63:21
+  61 |                 if (data.data) {
+  62 |                     setSettings(data.data);
+> 63 |                     applyFavicon(data.data.favicon_url);
+     |                     ^^^^^^^^^^^^ `applyFavicon` accessed before it is declared
+  64 |                 }
+  65 |             }
+  66 |         } catch (error) {
+
+C:\Projects\MasjidPortalSite\src\components\providers\branding-provider.tsx:87:5
+  85 |     };
+  86 |
+> 87 |     const applyFavicon = (url?: string) => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 88 |         if (!url) return;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 89 |         const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement("link");
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 90 |         link.type = "image/x-icon";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 91 |         link.rel = "shortcut icon";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 92 |         link.href = url;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 93 |         document.getElementsByTagName("head")[0].appendChild(link);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 94 |     };
+     | ^^^^^^^ `applyFavicon` is declared here
+  95 |
+  96 |     // Convert settings into CSS Variables dynamically
+  97 |     const cssVariables = settings  react-hooks/immutability
+  74:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projects\MasjidPortalSite\src\components\providers\branding-provider.tsx:74:9
+  72 |
+  73 |     useEffect(() => {
+> 74 |         fetchSettings();
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  75 |     }, []);
+  76 |
+  77 |     const updateSettings = (newSettings: Partial<BrandingSettings>) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/set-state-in-effect
+  75:8   warning  React Hook useEffect has a missing dependency: 'fetchSettings'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+C:\Projects\MasjidPortalSite\src\components\ui\brand-logo.tsx
+  1:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Projects\MasjidPortalSite\src\components\ui\fundraising-widget.tsx
+  19:20  warning  'setDonors' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Projects\MasjidPortalSite\src\components\ui\prayer-widget.tsx
+  15:26  warning  'setActivePrayer' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Projects\MasjidPortalSite\src\components\ui\sanctuary-canvas.tsx
+   15:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Projects\MasjidPortalSite\src\components\ui\sanctuary-canvas.tsx:15:9
+  13 |         const mq = window.matchMedia('(hover: none) and (pointer: coarse)');
+  14 |         const rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+> 15 |         setLow(mq.matches || rm.matches);
+     |         ^^^^^^ Avoid calling setState() directly within an effect
+  16 |     }, []);
+  17 |     return low;
+  18 | }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/set-state-in-effect
+  303:14  error  Error: Cannot modify local variables after render completes
+
+This argument is a function which may reassign or mutate `camera` after render, which can cause inconsistent behavior on subsequent renders. Consider using state instead.
+
+C:\Projects\MasjidPortalSite\src\components\ui\sanctuary-canvas.tsx:303:14
+  301 |     }, []);
+  302 |
+> 303 |     useFrame(() => {
+      |              ^^^^^^^
+> 304 |         if (groupRef.current) {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 305 |             groupRef.current.rotation.y += (mouse.current.x * 0.5 - groupRef.current.rotation.y) * 0.04;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 306 |             groupRef.current.rotation.x += (mouse.current.y * 0.3 - groupRef.current.rotation.x) * 0.04;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 307 |         }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 308 |         // Subtle scroll camera drift
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 309 |         const targetZ = 7.5 + scrollY * 0.003;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 310 |         (camera as THREE.PerspectiveCamera).position.z +=
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 311 |             (targetZ - (camera as THREE.PerspectiveCamera).position.z) * 0.06;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 312 |     });
+      | ^^^^^^ This function may (indirectly) reassign or modify `camera` after render
+  313 |
+  314 |     return <group ref={groupRef}>{children}</group>;
+  315 | }
+
+C:\Projects\MasjidPortalSite\src\components\ui\sanctuary-canvas.tsx:310:9
+  308 |         // Subtle scroll camera drift
+  309 |         const targetZ = 7.5 + scrollY * 0.003;
+> 310 |         (camera as THREE.PerspectiveCamera).position.z +=
+      |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This modifies `camera`
+  311 |             (targetZ - (camera as THREE.PerspectiveCamera).position.z) * 0.06;
+  312 |     });
+  313 |  react-hooks/immutability
+  310:9   error  Error: This value cannot be modified
+
+Modifying a value returned from a hook is not allowed. Consider moving the modification into the hook where the value is constructed.
+
+C:\Projects\MasjidPortalSite\src\components\ui\sanctuary-canvas.tsx:310:9
+  308 |         // Subtle scroll camera drift
+  309 |         const targetZ = 7.5 + scrollY * 0.003;
+> 310 |         (camera as THREE.PerspectiveCamera).position.z +=
+      |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `camera` cannot be modified
+  311 |             (targetZ - (camera as THREE.PerspectiveCamera).position.z) * 0.06;
+  312 |     });
+  313 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/immutability
+
+Γ£û 19 problems (10 errors, 9 warnings)
+

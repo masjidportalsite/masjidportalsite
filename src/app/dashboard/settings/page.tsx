@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { BrandingSettingsPanel } from '@/components/dashboard/settings/branding-settings';
 
 export default function SettingsPage() {
     const [editingProfile, setEditingProfile] = useState(false);
@@ -37,11 +38,11 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out font-sans">
-            <header className="mb-10 flex justify-between items-end">
+        <div className="max-w-6xl mx-auto space-y-8 md:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out font-sans w-full overflow-hidden">
+            <header className="mb-6 md:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 w-full">
                 <div>
-                    <h1 className="text-4xl font-semibold text-brand-emerald tracking-tight mb-2">System Settings</h1>
-                    <p className="text-foreground/60 font-medium">Manage platform parameters, currency, timezones, and contact configurations.</p>
+                    <h1 className="text-3xl md:text-4xl font-semibold text-[#003527] tracking-tight mb-2">System Settings</h1>
+                    <p className="text-foreground/60 font-medium text-sm md:text-base max-w-sm md:max-w-none">Manage platform parameters, currency, timezones, and contact configurations.</p>
                 </div>
                 {saved && (
                     <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm font-semibold animate-in fade-in slide-in-from-right-4 duration-300">
@@ -51,11 +52,11 @@ export default function SettingsPage() {
                 )}
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {/* Mosque Profile Card */}
-                <Card className="p-8 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70 flex flex-col">
+                <Card className="p-5 md:p-8 border border-[#003527]/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70 flex flex-col">
                     <div className="space-y-1 mb-6">
-                        <h2 className="text-xl font-bold text-brand-emerald tracking-tight">Mosque Profile</h2>
+                        <h2 className="text-lg md:text-xl font-bold text-[#003527] tracking-tight">Mosque Profile</h2>
                         <p className="text-xs text-foreground/50 font-medium">Standard regional details and base settings.</p>
                     </div>
 
@@ -63,25 +64,25 @@ export default function SettingsPage() {
                         <form onSubmit={handleSave} className="space-y-4 flex-1">
                             <div className="space-y-1">
                                 <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Mosque Name</label>
-                                <Input name="mosqueName" defaultValue={profileData.mosqueName} required />
+                                <Input name="mosqueName" defaultValue={profileData.mosqueName} required className="min-h-[48px] md:min-h-[44px] text-base" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">City</label>
-                                    <Input name="city" defaultValue={profileData.city} />
+                                    <Input name="city" defaultValue={profileData.city} className="min-h-[48px] md:min-h-[44px] text-base" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Country</label>
-                                    <Input name="country" defaultValue={profileData.country} />
+                                    <Input name="country" defaultValue={profileData.country} className="min-h-[48px] md:min-h-[44px] text-base" />
                                 </div>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Contact Email</label>
-                                <Input name="contactEmail" type="email" defaultValue={profileData.contactEmail} />
+                                <Input name="contactEmail" type="email" defaultValue={profileData.contactEmail} className="min-h-[48px] md:min-h-[44px] text-base" />
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Contact Phone</label>
-                                <Input name="contactPhone" defaultValue={profileData.contactPhone} />
+                                <Input name="contactPhone" defaultValue={profileData.contactPhone} className="min-h-[48px] md:min-h-[44px] text-base" />
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Timezone</label>
@@ -94,10 +95,10 @@ export default function SettingsPage() {
                                 </select>
                             </div>
                             <div className="flex gap-3 pt-2">
-                                <Button type="submit" className="bg-brand-emerald hover:bg-brand-emerald/90 text-white px-6 py-2 text-sm font-semibold">
+                                <Button type="submit" className="bg-[#003527] hover:bg-[#064e3b] text-white px-6 min-h-[48px] md:min-h-[44px] text-sm font-semibold">
                                     Save Changes
                                 </Button>
-                                <Button type="button" variant="ghost" onClick={() => setEditingProfile(false)} className="px-6 py-2 text-sm">
+                                <Button type="button" variant="ghost" onClick={() => setEditingProfile(false)} className="px-6 min-h-[48px] md:min-h-[44px] text-sm">
                                     Cancel
                                 </Button>
                             </div>
@@ -134,10 +135,10 @@ export default function SettingsPage() {
                 </Card>
 
                 {/* System Info & Theme Card */}
-                <div className="flex flex-col gap-6">
-                    <Card className="p-8 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70">
-                        <div className="space-y-1 mb-6">
-                            <h2 className="text-xl font-bold text-brand-emerald tracking-tight">Theme Preferences</h2>
+                <div className="flex flex-col gap-4 md:gap-6">
+                    <Card className="p-5 md:p-8 border border-[#003527]/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70">
+                        <div className="space-y-1 mb-5 md:mb-6">
+                            <h2 className="text-lg md:text-xl font-bold text-[#003527] tracking-tight">Theme Preferences</h2>
                             <p className="text-xs text-foreground/50 font-medium">Configure active themes and display properties.</p>
                         </div>
                         <div className="space-y-4">
@@ -154,9 +155,9 @@ export default function SettingsPage() {
                         </div>
                     </Card>
 
-                    <Card className="p-8 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70">
-                        <div className="space-y-1 mb-6">
-                            <h2 className="text-xl font-bold text-brand-emerald tracking-tight">System Information</h2>
+                    <Card className="p-5 md:p-8 border border-[#003527]/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70">
+                        <div className="space-y-1 mb-5 md:mb-6">
+                            <h2 className="text-lg md:text-xl font-bold text-[#003527] tracking-tight">System Information</h2>
                             <p className="text-xs text-foreground/50 font-medium">Platform version and deployment details.</p>
                         </div>
                         <div className="space-y-3 text-sm">
@@ -174,6 +175,10 @@ export default function SettingsPage() {
                         </div>
                     </Card>
                 </div>
+            </div>
+
+            <div className="pt-8">
+                <BrandingSettingsPanel />
             </div>
         </div>
     );

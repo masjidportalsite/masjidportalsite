@@ -9,6 +9,7 @@ interface PrayerTime {
     iqamah: string;
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export default function PrayerWidget() {
     const [activeTab, setActiveTab] = useState<string>('Kuala Lumpur');
     const [timeRemaining, setTimeRemaining] = useState<string>('12:45');

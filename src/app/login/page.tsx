@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useActionState, useEffect } from 'react'
+import React, { useActionState } from 'react'
 import { loginAction } from './actions'
 import { BrandLogo } from '@/components/ui/brand-logo'
 
@@ -120,7 +120,7 @@ export default function LoginPage() {
 
                 <div className="mt-12 text-center">
                     <p className="text-[#404944]/80">
-                        Don't have an account? <a className="text-[#003527] font-medium hover:underline" href="#">Contact your administrator</a>
+                        Don&apos;t have an account? <a className="text-[#003527] font-medium hover:underline" href="#">Contact your administrator</a>
                     </p>
                 </div>
             </div>

@@ -60,32 +60,32 @@ export default async function AnnouncementsPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out font-sans">
-            <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+        <div className="max-w-6xl mx-auto space-y-8 md:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out font-sans w-full overflow-hidden">
+            <header className="mb-6 md:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 w-full">
                 <div>
-                    <h1 className="text-4xl font-semibold text-brand-emerald tracking-tight mb-2">Announcements</h1>
-                    <p className="text-foreground/60 font-medium">Broadcast important updates, reminders, and news to the congregation.</p>
+                    <h1 className="text-3xl md:text-4xl font-semibold text-[#003527] tracking-tight mb-2">Announcements</h1>
+                    <p className="text-foreground/60 font-medium text-sm md:text-base max-w-sm md:max-w-none">Broadcast important updates, reminders, and news to the congregation.</p>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Post Announcement Form */}
-                <Card className="p-8 col-span-1 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] h-max flex flex-col gap-6">
+                <Card className="p-5 md:p-8 col-span-1 border border-[#003527]/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] h-max flex flex-col gap-5 md:gap-6">
                     <div>
-                        <h2 className="text-xl font-bold text-brand-emerald tracking-tight">Post Announcement</h2>
+                        <h2 className="text-lg md:text-xl font-bold text-[#003527] tracking-tight">Post Announcement</h2>
                         <p className="text-xs text-foreground/50 mt-1 font-medium">Broadcast a message to all community members.</p>
                     </div>
 
                     <form action={postAnnouncement} className="space-y-4">
                         <div className="space-y-1">
                             <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Title</label>
-                            <Input name="title" required placeholder="Jumuah Prayer Change Notice" />
+                            <Input name="title" required placeholder="Jumuah Prayer Change Notice" className="min-h-[48px] md:min-h-[44px] text-base" />
                         </div>
                         <div className="space-y-1">
                             <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Category</label>
                             <select
                                 name="category"
-                                className="flex h-10 w-full rounded-lg border border-brand-emerald/20 bg-brand-cream/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all duration-200"
+                                className="flex min-h-[48px] md:min-h-[44px] w-full rounded-lg border border-[#003527]/20 bg-[#f8f9ff]/50 px-4 py-2 text-base text-foreground focus:outline-none focus:ring-2 focus:ring-[#fed65b] focus:border-[#fed65b] transition-all duration-200"
                             >
                                 <option value="general">General</option>
                                 <option value="event">Event</option>
@@ -99,12 +99,12 @@ export default async function AnnouncementsPage() {
                                 name="body"
                                 required
                                 rows={5}
-                                className="flex w-full rounded-lg border border-brand-emerald/20 bg-brand-cream/50 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all duration-200 resize-none"
+                                className="flex w-full rounded-lg border border-[#003527]/20 bg-[#f8f9ff]/50 px-4 py-3 text-base text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-[#fed65b] focus:border-[#fed65b] transition-all duration-200 resize-none min-h-[120px]"
                                 placeholder="Enter your announcement message here..."
                             />
                         </div>
 
-                        <Button type="submit" className="w-full mt-4 bg-brand-emerald hover:bg-brand-emerald/90 py-2.5 rounded-lg text-sm font-semibold">
+                        <Button type="submit" className="w-full mt-4 min-h-[48px] md:min-h-[44px] bg-[#003527] hover:bg-[#064e3b] text-white py-3 rounded-lg text-sm md:text-base font-semibold shadow-lg shadow-[#003527]/20 active:scale-[0.98] transition-transform">
                             <span className="material-symbols-outlined text-sm mr-2">campaign</span>
                             Post Announcement
                         </Button>

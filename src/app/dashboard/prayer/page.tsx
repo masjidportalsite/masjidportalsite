@@ -142,12 +142,12 @@ export default async function PrayerTimesPage() {
                         </div>
                         <div>
                             <p className="font-bold text-[#003527]">{calculationMethod}</p>
-                            <p className="text-xs text-[#707974] mt-0.5">Juristic method: Shafi'i</p>
+                            <p className="text-xs text-[#707974] mt-0.5">Juristic method: {"Shafi'i"}</p>
                         </div>
                     </div>
                 </Card>
                 <Card className="p-6">
-                    <h3 className="text-[12px] font-bold uppercase tracking-widest text-[#707974] mb-4">Jumu'ah Details</h3>
+                    <h3 className="text-[12px] font-bold uppercase tracking-widest text-[#707974] mb-4">{"Jumu'ah Details"}</h3>
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-[#fed65b]/30 flex items-center justify-center">
                             <span className="material-symbols-outlined text-[#735c00]">mosque</span>

@@ -35,6 +35,8 @@ export default function RootLayout({
     >
       <head>
         <link rel="icon" href="/branding/favicon.svg" type="image/svg+xml" />
+        {/* Preload hero poster for instant FCP */}
+        <link rel="preload" as="image" href="/hero-poster.webp" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

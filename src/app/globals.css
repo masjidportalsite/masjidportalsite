@@ -1,21 +1,74 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brand Tokens */
   --color-brand-emerald: #064E3B;
   --color-brand-emerald-dim: #022c22;
   --color-brand-gold: #D4AF37;
   --color-brand-cream: #FAF9F6;
 
-  --color-primary: var(--color-brand-emerald);
-  --color-secondary: var(--color-brand-gold);
-  --color-background: var(--color-brand-cream);
+  /* Stitch Design System Tokens */
+  --color-primary: #003527;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #064e3b;
+  --color-on-primary-container: #80bea6;
+  --color-primary-fixed: #b0f0d6;
+  --color-primary-fixed-dim: #95d3ba;
+  --color-on-primary-fixed: #002117;
+  --color-on-primary-fixed-variant: #0b513d;
+  --color-inverse-primary: #95d3ba;
+
+  --color-secondary: #735c00;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fed65b;
+  --color-on-secondary-container: #745c00;
+  --color-secondary-fixed: #ffe088;
+  --color-secondary-fixed-dim: #e9c349;
+  --color-on-secondary-fixed: #241a00;
+  --color-on-secondary-fixed-variant: #574500;
+
+  --color-tertiary: #2d2e2c;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #434442;
+  --color-on-tertiary-container: #b1b1ae;
+  --color-tertiary-fixed: #e3e2e0;
+  --color-tertiary-fixed-dim: #c7c6c4;
+  --color-on-tertiary-fixed: #1a1c1a;
+  --color-on-tertiary-fixed-variant: #464745;
+
+  --color-surface: #f8f9ff;
+  --color-surface-dim: #d0dbed;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e6eeff;
+  --color-surface-container-high: #dee9fc;
+  --color-surface-container-highest: #d9e3f6;
+  --color-on-surface: #121c2a;
+  --color-on-surface-variant: #404944;
+  --color-inverse-surface: #27313f;
+  --color-inverse-on-surface: #eaf1ff;
+  --color-surface-variant: #d9e3f6;
+  --color-surface-tint: #2b6954;
+
+  --color-outline: #707974;
+  --color-outline-variant: #bfc9c3;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-background: #f8f9ff;
   --color-foreground: #121c2a;
+  --color-secondary-highlight: var(--color-brand-gold);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
   --radius-xl: 24px;
   --radius-lg: 12px;
+  --radius-2xl: 32px;
 }
 
 @layer base {
@@ -25,7 +78,41 @@
   }
 }
 
-/* Material Symbols Outlined — required CSS for ligature icon rendering */
+/* ─── Glass Card ─────────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(6, 78, 59, 0.1);
+  box-shadow: 0 40px 60px -15px rgba(6, 78, 59, 0.04);
+  border-radius: 24px;
+}
+
+.glass-card-dark {
+  background: rgba(5, 10, 8, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 60px -15px rgba(0, 0, 0, 0.55);
+  border-radius: 24px;
+}
+
+/* ─── Islamic Geometric Pattern ──────────────────────────────────────── */
+.islamic-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l2.5 7.5L40 10l-7.5 2.5L30 20l-2.5-7.5L20 10l7.5-2.5L30 0zm0 40l2.5 7.5L40 50l-7.5 2.5L30 60l-2.5-7.5L20 50l7.5-2.5L30 40zM0 30l7.5 2.5L10 40l2.5-7.5L20 30l-7.5-2.5L10 20l-2.5 7.5L0 30zm40 0l7.5 2.5L50 40l2.5-7.5L60 30l-7.5-2.5L50 20l-2.5 7.5L40 30z' fill='%23003527' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.islamic-pattern-dark {
+  background-color: #064e3b;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l2.5 7.5L40 10l-7.5 2.5L30 20l-2.5-7.5L20 10l7.5-2.5L30 0zm0 40l2.5 7.5L40 50l-7.5 2.5L30 60l-2.5-7.5L20 50l7.5-2.5L30 40zM0 30l7.5 2.5L10 40l2.5-7.5L20 30l-7.5-2.5L10 20l-2.5 7.5L0 30zm40 0l7.5 2.5L50 40l2.5-7.5L60 30l-7.5-2.5L50 20l-2.5 7.5L40 30z' fill='%23003527' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* ─── Prayer Glow ─────────────────────────────────────────────────────── */
+.prayer-glow {
+  box-shadow: 0 0 20px rgba(254, 214, 91, 0.3);
+}
+
+/* ─── Material Symbols Outlined ──────────────────────────────────────── */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -44,4 +131,48 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   user-select: none;
+}
+
+/* ─── Cinematic Hero Animations ─────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes audioBar {
+
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cinematic hero glassmorphism overlay */
+.hero-glass {
+  background: rgba(5, 10, 8, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
 }

@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default async function EventsPage() {
     const res = await pool.query('SELECT id, title, description, start_time, end_time, location, capacity FROM events ORDER BY start_time ASC');
@@ -28,66 +30,105 @@ export default async function EventsPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+        <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out font-sans">
             <header className="mb-10 flex justify-between items-end">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-brand-emerald tracking-tight mb-2">Events & Classes</h1>
-                    <p className="text-gray-500">Schedule and manage community gatherings.</p>
+                    <h1 className="text-4xl font-semibold text-brand-emerald tracking-tight mb-2 font-display">Programs & Events</h1>
+                    <p className="text-foreground/60 font-medium">Schedule weekly sermons, educational classes, community events, and special prayers.</p>
                 </div>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <Card className="p-6 col-span-1 border border-brand-emerald-dim shadow shadow-brand-emerald/10 h-max">
-                    <h2 className="text-xl font-bold mb-4 text-brand-emerald">Create Event</h2>
+                {/* Create Event Card */}
+                <Card className="p-8 col-span-1 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] h-max flex flex-col gap-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-brand-emerald tracking-tight">Schedule Program</h2>
+                        <p className="text-xs text-foreground/50 mt-1 font-medium">Add a new event or educational series to the schedule.</p>
+                    </div>
+
                     <form action={createEvent} className="space-y-4">
-                        <div>
-                            <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Title</label>
-                            <input name="title" required className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald" placeholder="Jumuah Khutbah" />
+                        <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Program Title</label>
+                            <Input name="title" required placeholder="Jumuah Khutbah" />
                         </div>
-                        <div>
-                            <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Description</label>
-                            <textarea name="description" rows={3} className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald" placeholder="Weekly Friday prayers..."></textarea>
+                        <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Description</label>
+                            <textarea
+                                name="description"
+                                rows={3}
+                                className="flex w-full rounded-lg border border-brand-emerald/20 bg-brand-cream/50 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all duration-200"
+                                placeholder="Details about this weekly gathering..."
+                            ></textarea>
                         </div>
-                        <div>
-                            <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Location</label>
-                            <input name="location" required className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald" placeholder="Main Prayer Hall" />
+                        <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Venue / Location</label>
+                            <Input name="location" required placeholder="Main Prayer Hall" />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Capacity</label>
-                                <input name="capacity" type="number" className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald" placeholder="500" />
+                            <div className="space-y-1">
+                                <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Max Capacity</label>
+                                <Input name="capacity" type="number" placeholder="500" />
                             </div>
-                            <div>
-                                <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Start Time</label>
-                                <input name="startTime" type="datetime-local" required className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald" />
+                            <div className="space-y-1">
+                                <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Start Time</label>
+                                <input
+                                    name="startTime"
+                                    type="datetime-local"
+                                    required
+                                    className="flex h-10 w-full rounded-lg border border-brand-emerald/20 bg-brand-cream/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all duration-200"
+                                />
                             </div>
                         </div>
-                        <button type="submit" className="w-full mt-4 bg-brand-emerald text-brand-cream rounded p-2 font-bold hover:bg-brand-emerald-dim transition-colors shadow">
-                            Publish Event
-                        </button>
+
+                        <Button type="submit" className="w-full mt-4 bg-brand-emerald hover:bg-brand-emerald/90 py-2.5 rounded-lg text-sm font-semibold">
+                            Publish Program
+                        </Button>
                     </form>
                 </Card>
 
-                <div className="col-span-1 lg:col-span-2 space-y-4">
+                {/* Scheduled Programs list */}
+                <div className="col-span-1 lg:col-span-2 space-y-6">
                     {events.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 rounded-lg">No upcoming events.</div>
+                        <div className="p-12 text-center text-foreground/50 border border-dashed border-brand-emerald/20 rounded-[24px] font-medium bg-white/40">
+                            No upcoming programs scheduled yet.
+                        </div>
                     ) : events.map((event) => (
-                        <Card key={event.id} className="p-6 shadow shadow-brand-emerald/5 hover:scale-[1.01] transition-transform border border-brand-emerald/10 flex flex-col sm:flex-row gap-6 items-center">
-                            <div className="bg-emerald-50 rounded-lg p-4 text-center min-w-24">
-                                <span className="block text-sm font-bold text-brand-emerald uppercase tracking-wider">
-                                    {new Date(event.start_time).toLocaleString('default', { month: 'short' })}
+                        <Card
+                            key={event.id}
+                            className="p-8 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] hover:shadow-[0_20px_40px_-5px_rgba(6,78,59,0.08)] hover:scale-[1.02] active:scale-100 transition-all duration-300 border border-brand-emerald/10 flex flex-col sm:flex-row gap-6 items-center"
+                        >
+                            {/* Premium Calendar Date badge */}
+                            <div className="bg-brand-emerald/5 rounded-[20px] p-4 text-center min-w-28 border border-brand-emerald/10 shadow-sm">
+                                <span className="block text-xs font-bold text-brand-emerald uppercase tracking-widest mb-1">
+                                    {new Date(event.start_time).toLocaleString(undefined, { month: 'short' })}
                                 </span>
-                                <span className="block text-3xl font-extrabold text-brand-emerald">
+                                <span className="block text-4xl font-extrabold text-brand-emerald tracking-tight">
                                     {new Date(event.start_time).getDate()}
                                 </span>
+                                <span className="block text-[10px] font-bold text-brand-gold uppercase tracking-wider mt-1.5 bg-brand-emerald px-1 py-0.5 rounded-md">
+                                    {new Date(event.start_time).toLocaleString(undefined, { weekday: 'short' })}
+                                </span>
                             </div>
-                            <div className="flex-1">
-                                <h3 className="text-xl font-bold text-gray-900">{event.title}</h3>
-                                <p className="text-sm text-gray-500 mb-3">{event.description}</p>
-                                <div className="flex flex-wrap gap-4 text-xs font-semibold text-gray-600 bg-gray-50 p-2 rounded-md">
-                                    <span>📍 {event.location}</span>
-                                    <span>👥 {event.capacity} Max</span>
-                                    <span>🕒 {new Date(event.start_time).toLocaleTimeString()}</span>
+
+                            <div className="flex-1 space-y-4 w-full">
+                                <div>
+                                    <h3 className="text-xl font-bold text-brand-emerald tracking-tight leading-snug">{event.title}</h3>
+                                    <p className="text-sm text-foreground/75 mt-1 leading-relaxed font-medium">{event.description}</p>
+                                </div>
+
+                                <div className="flex flex-wrap gap-4 text-xs font-semibold text-foreground/60 bg-brand-cream/60 border border-brand-emerald/5 px-4 py-2.5 rounded-xl shadow-inner w-max max-w-full">
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="material-symbols-outlined text-[14px]">place</span>
+                                        {event.location}
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="material-symbols-outlined text-[14px]">group</span>
+                                        {event.capacity} Max Capacity
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="material-symbols-outlined text-[14px]">schedule</span>
+                                        {new Date(event.start_time).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
                                 </div>
                             </div>
                         </Card>

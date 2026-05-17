@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default async function DonationsPage() {
     // 1. Fetch Donations
@@ -11,6 +13,11 @@ export default async function DonationsPage() {
     // 2. Fetch Users to populate the dropdown
     const usersRes = await pool.query('SELECT id, full_name, email FROM users ORDER BY full_name ASC');
     const users = usersRes.rows;
+
+    // 3. Compute live summary metrics for visual highlights
+    const totalAmount = donations.reduce((sum, d) => sum + Number(d.amount), 0);
+    const campaignTarget = 50000; // MYR target representing the Sanctuary Maintenance & Zakat Fund
+    const progressPercentage = Math.min(Math.round((totalAmount / campaignTarget) * 100), 100);
 
     async function recordDonation(formData: FormData) {
         'use server';
@@ -28,73 +35,131 @@ export default async function DonationsPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+        <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out font-sans">
             <header className="mb-10 flex justify-between items-end">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-brand-emerald tracking-tight mb-2">Donations</h1>
-                    <p className="text-gray-500">Track incoming congregational and campaign donations.</p>
+                    <h1 className="text-4xl font-semibold text-brand-emerald tracking-tight mb-2 font-display">Campaigns & Donations</h1>
+                    <p className="text-foreground/60 font-medium">Log and monitor community contributions, charity distributions, and Zakat funds.</p>
                 </div>
             </header>
 
+            {/* Campaign Progress & Summary Widget */}
+            <Card className="p-8 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] bg-white/70">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+                    <div>
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-brand-gold bg-brand-emerald px-3 py-1.5 rounded-full inline-block mb-3 border border-brand-gold/15">Active Campaign</span>
+                        <h2 className="text-2xl font-bold text-brand-emerald tracking-tight">Ramadan Sanctuary Renovation & Zakat</h2>
+                        <p className="text-foreground/60 text-sm mt-1 font-medium">Targeted funds for maintenance, carpet upgrades, and local aid programs.</p>
+                    </div>
+
+                    <div className="text-right flex flex-col md:items-end justify-center">
+                        <span className="text-sm font-semibold text-foreground/50">Fund Progress</span>
+                        <div className="flex items-baseline gap-2 mt-1">
+                            <span className="text-3xl font-extrabold text-brand-emerald">
+                                {new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR', maximumFractionDigits: 0 }).format(totalAmount)}
+                            </span>
+                            <span className="text-xs font-semibold text-[#707974]">of {new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR', maximumFractionDigits: 0 }).format(campaignTarget)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Signature Progress Bar (light emerald track, gold-to-emerald gradient bar) */}
+                <div className="w-full h-4 bg-brand-emerald/10 rounded-full overflow-hidden shadow-inner relative flex mb-2 border border-brand-emerald/5">
+                    <div
+                        className="h-full bg-gradient-to-r from-brand-gold to-brand-emerald rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${progressPercentage}%` }}
+                    ></div>
+                </div>
+
+                <div className="flex justify-between items-center text-xs font-semibold text-[#707974] px-1">
+                    <span>{progressPercentage}% Completed</span>
+                    <span className="flex items-center gap-1.5 text-brand-emerald">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-ping"></span>
+                        Auto-calculating Contributions
+                    </span>
+                </div>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <Card className="p-6 col-span-1 border border-brand-emerald-dim shadow shadow-brand-emerald/10 h-max">
-                    <h2 className="text-xl font-bold mb-4 text-brand-emerald">Record Donation</h2>
+                {/* Record Donation Card */}
+                <Card className="p-8 col-span-1 border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)] h-max flex flex-col gap-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-brand-emerald tracking-tight">Record Contribution</h2>
+                        <p className="text-xs text-foreground/50 mt-1 font-medium">Log a manual or walk-in congregational donation offline.</p>
+                    </div>
+
                     <form action={recordDonation} className="space-y-4">
-                        <div>
-                            <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Donor</label>
-                            <select name="userId" required className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald">
+                        <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Donor Name</label>
+                            <select
+                                name="userId"
+                                required
+                                className="flex h-10 w-full rounded-lg border border-brand-emerald/20 bg-brand-cream/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all duration-200"
+                            >
                                 <option value="">Select Donor...</option>
                                 {users.map(u => <option key={u.id} value={u.id}>{u.full_name} ({u.email})</option>)}
                             </select>
                         </div>
-                        <div>
-                            <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Amount (MYR)</label>
-                            <input name="amount" type="number" step="0.01" min="1" required className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald" placeholder="100.00" />
+                        <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Amount (MYR)</label>
+                            <Input
+                                name="amount"
+                                type="number"
+                                step="0.01"
+                                min="1"
+                                required
+                                placeholder="100.00"
+                            />
                         </div>
-                        <div>
-                            <label className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-1 block">Type</label>
-                            <select name="type" className="w-full bg-brand-cream border border-brand-emerald-dim p-2 rounded focus:outline-brand-emerald">
-                                <option value="general">General</option>
+                        <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-[#707974] block px-1">Donation Category</label>
+                            <select
+                                name="type"
+                                className="flex h-10 w-full rounded-lg border border-brand-emerald/20 bg-brand-cream/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all duration-200"
+                            >
+                                <option value="general">General Upkeep</option>
                                 <option value="sadaqah">Sadaqah</option>
-                                <option value="zakat">Zakat</option>
-                                <option value="campaign">Campaign</option>
+                                <option value="zakat">Zakat Distribution</option>
+                                <option value="campaign">Active Campaign Fund</option>
                             </select>
                         </div>
-                        <button type="submit" className="w-full mt-4 bg-brand-gold text-brand-emerald-dim rounded p-2 font-bold hover:bg-amber-400 transition-colors shadow">
+
+                        <Button type="submit" className="w-full mt-4 bg-brand-gold hover:bg-amber-400 text-brand-emerald py-2.5 rounded-lg text-sm font-bold shadow-md shadow-brand-gold/10">
                             Save Record
-                        </button>
+                        </Button>
                     </form>
                 </Card>
 
-                <Card className="col-span-1 lg:col-span-2 overflow-hidden shadow-xl shadow-brand-emerald/5 border-t border-brand-emerald-dim">
+                {/* Donations Ledger Card */}
+                <Card className="col-span-1 lg:col-span-2 overflow-hidden border border-brand-emerald/10 shadow-[0_20px_40px_-10px_rgba(6,78,59,0.04)]">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-[#1f2937] text-white">
+                            <thead className="bg-brand-emerald/5 text-brand-emerald border-b border-brand-emerald/10">
                                 <tr>
-                                    <th className="p-4 font-semibold">Donor</th>
-                                    <th className="p-4 font-semibold">Amount</th>
-                                    <th className="p-4 font-semibold">Type</th>
-                                    <th className="p-4 font-semibold">Date</th>
+                                    <th className="p-4 font-bold uppercase tracking-wider text-xs">Donor</th>
+                                    <th className="p-4 font-bold uppercase tracking-wider text-xs">Contribution</th>
+                                    <th className="p-4 font-bold uppercase tracking-wider text-xs">Category</th>
+                                    <th className="p-4 font-bold uppercase tracking-wider text-xs">Date logged</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-brand-emerald/5">
                                 {donations.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} className="p-8 text-center text-gray-500">No donations found.</td>
+                                        <td colSpan={4} className="p-8 text-center text-foreground/50 font-medium">No donation listings recorded.</td>
                                     </tr>
                                 ) : donations.map((d) => (
-                                    <tr key={d.id} className="hover:bg-brand-cream transition-colors">
-                                        <td className="p-4 font-medium">{d.donor_name || 'Anonymous'}</td>
-                                        <td className="p-4 font-bold text-brand-emerald">
+                                    <tr key={d.id} className="hover:bg-brand-cream/50 transition-colors">
+                                        <td className="p-4 font-medium text-foreground text-sm">{d.donor_name || 'Anonymous Donor'}</td>
+                                        <td className="p-4 font-bold text-brand-emerald text-sm">
                                             {new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR' }).format(d.amount)}
                                         </td>
                                         <td className="p-4">
-                                            <span className="px-2 py-1 rounded text-xs uppercase font-bold tracking-wider bg-gray-100 text-gray-600">
+                                            <span className="px-2.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest bg-brand-cream border border-brand-emerald/10 shadow-sm text-foreground/70">
                                                 {d.type}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-gray-500">
-                                            {new Date(d.created_at).toLocaleDateString()}
+                                        <td className="p-4 text-foreground/60 text-xs font-medium">
+                                            {new Date(d.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                                         </td>
                                     </tr>
                                 ))}

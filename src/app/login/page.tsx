@@ -54,7 +54,7 @@ export default function LoginPage() {
                         <div className="relative group">
                             <span className="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-[#707974] select-none">mail</span>
                             <input
-                                className="w-full pl-[52px] pr-6 py-3 bg-white/50 border border-[#bfc9c3] rounded-lg text-[#121c2a] focus:ring-2 focus:ring-[#ffe088] focus:border-[#735c00] focus:outline-none transition-all placeholder:text-[#707974]/50"
+                                className="w-full pl-[52px] pr-6 py-3 bg-white/50 border border-[#bfc9c3] rounded-lg text-[#121c2a] focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none transition-all placeholder:text-[#707974]/50"
                                 id="email"
                                 name="email"
                                 placeholder="name@masjid.local"
@@ -74,7 +74,7 @@ export default function LoginPage() {
                         <div className="relative group">
                             <span className="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-[#707974] select-none">lock</span>
                             <input
-                                className="w-full pl-[52px] pr-6 py-3 bg-white/50 border border-[#bfc9c3] rounded-lg text-[#121c2a] focus:ring-2 focus:ring-[#ffe088] focus:border-[#735c00] focus:outline-none transition-all placeholder:text-[#707974]/50"
+                                className="w-full pl-[52px] pr-6 py-3 bg-white/50 border border-[#bfc9c3] rounded-lg text-[#121c2a] focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none transition-all placeholder:text-[#707974]/50"
                                 id="password"
                                 name="password"
                                 placeholder="••••••••"

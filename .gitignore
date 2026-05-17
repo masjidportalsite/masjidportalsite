@@ -54,3 +54,10 @@ next-env.d.ts
 .roo
 .trae
 .windsurf
+
+# OpenNext build artifacts
+.open-next/
+
+# Cursor local editor config
+.cursor/
+

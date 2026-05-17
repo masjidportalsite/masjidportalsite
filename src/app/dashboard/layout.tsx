@@ -3,16 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { logoutAction } from './actions';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     // Interactive Simulated Roles List
     const rolesList = ['Super Admin', 'Imam / Staff', 'Committee Member', 'Community Member'];
     const [activeRole, setActiveRole] = useState('Super Admin');
 
-    // Retrieve previous simulated state from localStorage if available
     useEffect(() => {
         const storedRole = localStorage.getItem('simulated_role');
         if (storedRole && rolesList.includes(storedRole)) {
@@ -33,11 +34,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         { name: 'Donations', path: '/dashboard/donations', icon: 'volunteer_activism' },
         { name: 'Events & Classes', path: '/dashboard/events', icon: 'calendar_month' },
         { name: 'Volunteers', path: '/dashboard/volunteers', icon: 'person_apron' },
+        { name: 'Announcements', path: '/dashboard/announcements', icon: 'campaign' },
         { name: 'Analytics', path: '/dashboard/analytics', icon: 'trending_up' },
         { name: 'Settings', path: '/dashboard/settings', icon: 'settings' },
     ];
 
-    // Decorative Icon mapping for roles
     const getRoleIcon = (role: string) => {
         switch (role) {
             case 'Super Admin': return 'vpn_key';
@@ -48,7 +49,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
     };
 
-    // Role-specific badge styles
     const getBadgeStyle = (role: string) => {
         switch (role) {
             case 'Super Admin': return 'bg-brand-gold text-brand-emerald border-brand-gold';
@@ -59,16 +59,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
     };
 
+    const isActive = (path: string) => {
+        if (path === '/dashboard') return pathname === '/dashboard';
+        return pathname.startsWith(path);
+    };
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+        await logoutAction();
+    };
+
     return (
         <div className="min-h-screen bg-brand-cream text-foreground flex flex-col md:flex-row font-sans">
             {/* Mobile Header */}
             <header className="flex md:hidden justify-between items-center bg-brand-emerald text-brand-cream p-4 shadow-lg sticky top-0 z-50">
                 <div className="flex items-center gap-2 font-bold tracking-wider text-lg">
-                    <span className="material-symbols-outlined text-brand-gold scale-90">mosque</span>
+                    <span className="material-symbols-outlined text-brand-gold">mosque</span>
                     MasjidPortal
                 </div>
                 <div className="flex items-center gap-3">
-                    {/* Compact Interactive Role Badge on Mobile */}
                     <button
                         onClick={cycleRole}
                         className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full border bg-white/10 text-white flex items-center gap-1 active:scale-95 transition-transform"
@@ -87,57 +96,62 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Mobile Dropdown Menu */}
             {isMobileMenuOpen && (
-                <nav className="md:hidden bg-brand-emerald text-brand-cream p-6 flex flex-col gap-4 font-medium sticky top-[56px] z-40 border-b border-brand-emerald-dim shadow-xl">
-                    {navItems.map((item) => {
-                        const isActive = pathname === item.path;
-                        return (
+                <nav className="md:hidden bg-brand-emerald text-brand-cream p-6 flex flex-col gap-2 font-medium sticky top-[56px] z-40 border-b border-brand-emerald-dim shadow-xl">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.path}
+                            href={item.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${isActive(item.path)
+                                ? 'bg-[#002f23] text-brand-gold border-l-4 border-brand-gold font-semibold'
+                                : 'hover:bg-white/10 hover:text-brand-gold text-brand-cream/80'
+                                }`}
+                        >
+                            <span className="material-symbols-outlined select-none mr-3 text-xl">{item.icon}</span>
+                            {item.name}
+                        </Link>
+                    ))}
+                    <div className="border-t border-white/10 pt-3 mt-1">
+                        <button
+                            onClick={handleLogout}
+                            disabled={isLoggingOut}
+                            className="flex items-center w-full px-4 py-3 rounded-lg text-red-300 hover:bg-red-500/15 transition-all duration-200 font-semibold"
+                        >
+                            <span className="material-symbols-outlined select-none mr-3 text-xl">logout</span>
+                            {isLoggingOut ? 'Signing out...' : 'Sign Out'}
+                        </button>
+                    </div>
+                </nav>
+            )}
+
+            {/* Desktop Sidebar */}
+            <aside className="hidden md:flex md:w-72 bg-brand-emerald text-brand-cream p-6 flex-col h-screen sticky top-0 border-r border-[#bfc9c3]/10 shadow-xl z-20 justify-between overflow-y-auto">
+                <div className="flex flex-col gap-1">
+                    <div className="font-bold tracking-wider mb-8 text-xl border-b border-[#bfc9c3]/15 pb-5 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-brand-gold">mosque</span>
+                        MasjidPortal<span className="text-brand-gold">.</span>
+                    </div>
+
+                    <nav className="flex flex-col gap-1 font-medium">
+                        {navItems.map((item) => (
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${isActive
-                                    ? 'bg-brand-emerald-dim text-brand-gold border-l-4 border-brand-gold font-semibold'
-                                    : 'hover:bg-brand-emerald-dim/50 hover:text-brand-gold'
+                                className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-100 ${isActive(item.path)
+                                    ? 'bg-[#002f23] text-brand-gold border-l-4 border-brand-gold font-semibold shadow-md'
+                                    : 'hover:bg-white/10 hover:text-brand-gold text-brand-cream/80'
                                     }`}
                             >
                                 <span className="material-symbols-outlined select-none mr-3 text-xl">{item.icon}</span>
                                 {item.name}
                             </Link>
-                        );
-                    })}
-                </nav>
-            )}
-
-            {/* Desktop Sidebar */}
-            <aside className="hidden md:flex md:w-64 bg-brand-emerald text-brand-cream p-6 flex-col h-screen sticky top-0 border-r border-[#bfc9c3]/10 shadow-xl z-20 justify-between">
-                <div>
-                    <div className="font-bold tracking-wider mb-10 text-xl border-b border-[#bfc9c3]/15 pb-5 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-brand-gold">mosque</span>
-                        MasjidPortal<span className="text-brand-gold">.</span>
-                    </div>
-
-                    <nav className="flex flex-col gap-2 font-medium">
-                        {navItems.map((item) => {
-                            const isActive = pathname === item.path;
-                            return (
-                                <Link
-                                    key={item.path}
-                                    href={item.path}
-                                    className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-100 ${isActive
-                                        ? 'bg-[#002f23] text-brand-gold border-l-4 border-brand-gold font-semibold shadow-md'
-                                        : 'hover:bg-brand-[#00382a]/55 hover:text-brand-gold text-brand-cream/80'
-                                        }`}
-                                >
-                                    <span className="material-symbols-outlined select-none mr-3 text-xl">{item.icon}</span>
-                                    {item.name}
-                                </Link>
-                            );
-                        })}
+                        ))}
                     </nav>
                 </div>
 
-                {/* Highly Interactive Simulated Role Selector Bottom Sidebar Segment */}
+                {/* Bottom Sidebar Section */}
                 <div className="pt-6 border-t border-[#bfc9c3]/15 flex flex-col gap-3">
+                    {/* RBAC Role Showcase */}
                     <span className="text-[9px] uppercase tracking-widest font-bold opacity-50 block pl-1">Interactive RBAC Showcase</span>
                     <button
                         onClick={cycleRole}
@@ -153,11 +167,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                         <span className="material-symbols-outlined text-xs opacity-60 leading-none">sync</span>
                     </button>
+
+                    {/* Logout Button */}
+                    <button
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="flex items-center w-full px-4 py-3 rounded-lg text-red-300 hover:bg-red-500/15 transition-all duration-200 font-semibold text-sm active:scale-95 disabled:opacity-60"
+                    >
+                        <span className="material-symbols-outlined select-none mr-3 text-lg">logout</span>
+                        {isLoggingOut ? 'Signing out...' : 'Sign Out'}
+                    </button>
                 </div>
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 p-6 md:p-12 overflow-auto relative">
+            <main className="flex-1 p-6 md:p-10 overflow-auto relative min-h-screen">
                 {children}
             </main>
         </div>

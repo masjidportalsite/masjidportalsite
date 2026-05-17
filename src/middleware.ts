@@ -5,14 +5,21 @@ export function middleware(request: NextRequest) {
     const token = request.cookies.get('portal_session')?.value;
     const { pathname } = request.nextUrl;
 
-    const publicRoutes = ['/login'];
-    // Let Next.js and static files pass
-    if (pathname.startsWith('/_next') || pathname.startsWith('/favicon.ico')) return NextResponse.next();
+    // Static assets and Next.js internals
+    if (pathname.startsWith('/_next') || pathname.startsWith('/favicon.ico')) {
+        return NextResponse.next();
+    }
 
-    if (!token && !publicRoutes.includes(pathname)) {
+    // Public routes — accessible without authentication
+    const publicRoutes = ['/', '/login'];
+    const isPublic = publicRoutes.includes(pathname);
+
+    // Redirect unauthenticated users away from protected routes
+    if (!token && !isPublic) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
+    // Redirect authenticated users away from login back to dashboard
     if (token && pathname === '/login') {
         return NextResponse.redirect(new URL('/dashboard', request.url));
     }

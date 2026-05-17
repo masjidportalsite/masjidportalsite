@@ -49,7 +49,9 @@ export async function loginAction(state: unknown, formData: FormData) {
 
     } catch (error) {
         console.error('Login error:', error)
-        return { error: 'An unexpected error occurred during login' }
+        const errMsg = error instanceof Error ? `[${error.name}] ${error.message}` : String(error);
+        const errStack = error instanceof Error ? error.stack : '';
+        return { error: `An unexpected error occurred during login: ${errMsg}\nStack: ${errStack}` }
     }
 
     redirect('/dashboard')

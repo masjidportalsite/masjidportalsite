@@ -27,8 +27,14 @@
 - **Privacy (Aurat of Data):** Communities are sensitive about who sees their donation amounts and household details. Strong RLS is a marketing point.
 - **Transparency:** Public dashboards showing "Collection vs. Expenditure" build massive trust.
 - **Prayer Time Calculation:** Must support various calculation methods (JAKIM for Malaysia, KEMENAG for Indonesia, MUIS for Singapore).
+- **Nisab Tracking:** Zakat calculators must pull live "Nisab" values (minimum wealth threshold) which are updated semi-annually by state Zakat bodies (e.g., Lembaga Zakat Selangor).
 
-## 4. Feature Recommendations
+## 4. Payment Gateway Ecosystem (Malaysia Focus)
+- **ToyyibPay:** The "de facto" choice for mosques. They allow registration using the Mosque/Surau committee certificate (issued by JAIN) instead of a standard SSM business license. Offers specialized "Tabung Masjid" features with RM1.00 flat fees for FPX.
+- **Billplz:** Preferred for high-growth Islamic NGOs. Superior API and dashboard for reconciliation.
+- **Direct DuitNow QR Integration:** Vital for the "SacredCore" TV display. Generating a dynamic QR code for specific campaigns on the spot increases conversion significantly.
+
+## 5. Feature Recommendations
 - **Khairat Kematian (Funeral Fund):** A uniquely Malay-Muslim feature where members pay an annual fee for funeral coverage.
 - **Zakat Calculator:** Integrated calculator for Zakat Pendapatan and Zakat Simpanan based on local Nisab.
 - **Qurban/Aqiqah:** Seasonal features for managing cattle sacrifice during Eid al-Adha.

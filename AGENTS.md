@@ -131,3 +131,17 @@ Available languages:
 - Storage: Upload files to buckets, store URLs in database
 - AI integrations should call OpenRouter directly with `baseURL: "https://openrouter.ai/api/v1"` and a server-side `OPENROUTER_API_KEY`
 - **EXTRA IMPORTANT**: Use Tailwind CSS 3.4 (do not upgrade to v4). Lock these dependencies in `package.json`
+# Team MasjidPortalSite - Autonomous Agents
+
+| Agent | Role | Capabilities |
+|-------|------|--------------|
+| Lead | Team management, task planning, delegation | Lead |
+| Database/Auth Agent | Database design, Prisma, Auth, RLS | agent-database-auth-agent |
+| Frontend Agent | Next.js, React, Tailwind, UI/UX | agent-frontend-agent |
+| Backend Agent | API Routes, Server Logic, Middlewares | agent-backend-agent |
+| DevOps Agent | Vercel, CI/CD, Monitoring, Infrastructure | agent-devops-agent |
+| QA Agent | Testing, Audits, Quality Assurance | agent-qa-agent |
+| Product & UX Agent | UX Design, Product Research, Accessibility | agent-product-ux-agent |
+| Documentation Agent | Technical Docs, ADRs, Onboarding, Changelogs | agent-documentation-agent |
+| Security Agent | Security Audits, Vulnerabilities, RBAC | agent-security-agent |
+| Business Growth Agent | Business Strategy, Market Research, Growth | agent-business-growth-agent |

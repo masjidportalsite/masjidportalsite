@@ -39,3 +39,20 @@ We will implement a referral program where mosques that successfully onboard ano
 ## 6. Community Engagement
 - **Townhalls:** Quarterly online sessions with mosque committees to discuss the product roadmap.
 - **User Groups:** WhatsApp/Telegram communities for Mosque Administrators to share best practices.
+
+## 7. PLG Viral Loops
+We will leverage the natural community interaction within the mosque ecosystem to drive organic growth:
+
+- **Loop 1: The "Digital TV" Effect:** Our high-fidelity "Emerald" TV display system (SacredCore) acts as a physical billboard. Visiting committees from other mosques often benchmark their own mosque's digital presence against neighbors.
+- **Loop 2: Professional Digital Receipts:** Donors receive branded, professional receipts via WhatsApp/Email. The "Powered by MasjidPortalSite" branding on these high-utility documents increases brand awareness among the most active community members (donors).
+- **Loop 3: Household Management:** By requiring the "Ketua Keluarga" (Head of Household) to manage their family members on the portal for event registration, we drive multi-user adoption within a single family unit.
+
+## 8. Pricing Tiers (Preliminary Draft)
+| Feature | Free (Community) | Premium (SME) | Enterprise (JAIN/State) |
+| :--- | :--- | :--- | :--- |
+| **Prayer Times & TV** | Yes | Custom Themes | Multi-site Sync |
+| **Donations (Mock/Live)** | Basic | Advanced Analytics | Audit-Ready Reports |
+| **Member Management** | Up to 100 | Unlimited | Multi-branch/Centralized |
+| **Audit Logs** | Basic | Full (1-year) | Unlimited / Immutable |
+| **Payment Fee** | Standard | Discounted | Negotiated |
+| **API Access** | No | Basic | Full |

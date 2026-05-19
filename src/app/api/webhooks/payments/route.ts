@@ -124,7 +124,7 @@ export async function POST(req: Request) {
     timestamp: new Date().toISOString()
   });
 
-  const { donation_id, status, receipt_url, provider: _provider, ...extraData } = payload;
+  const { donation_id, status, receipt_url, provider: _provider, ...extraData } = payload as any;
 
   // Handle different payment statuses
   if (status === 'successful') {

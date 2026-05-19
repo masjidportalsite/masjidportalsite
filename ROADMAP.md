@@ -3,11 +3,13 @@
 ## Overview
 This document outlines the path from Local MVP development to a Production-ready environment on Vercel and InsForge Cloud.
 
-## Phase 1: Local Testing & QA (Current)
-- Complete Next.js architecture refactoring (App Router, Tailwind v4).
-- Verify InsForge Supabase schema (`0001_insforge_schemas.sql`).
-- Test multi-tenant JWT parsing and RLS policies locally using Supabase CLI.
-- Run UI cross-browser audits focusing on the "Emerald" design system and mobile responsiveness.
+## Phase 1: Local Testing & QA (In-Progress)
+- [ ] Complete Next.js architecture refactoring (Next.js 15, Tailwind v3.4 downgrade).
+- [ ] Verify InsForge Supabase schema (`0001_insforge_schemas.sql`).
+- [ ] Test multi-tenant JWT parsing and RLS policies locally using Supabase CLI.
+- [ ] Run UI cross-browser audits focusing on the "Emerald" design system and mobile responsiveness.
+- [x] Set up initial documentation structure (ADRs, API, Deployment, Onboarding).
+- [ ] Resolve critical linting and type errors.
 
 ## Phase 2: InsForge (Backend) Provisioning
 1. **Initialize Project**: Create the production InsForge/Supabase project.

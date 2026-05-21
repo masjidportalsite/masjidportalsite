@@ -20,7 +20,7 @@ export class PostgresSessionAdapter implements AuthAdapter {
     async getSession(token: string): Promise<User | null> {
         try {
             const { rows } = await pool.query(
-                `SELECT u.id, u.email, u.role, u.full_name, u.created_at
+                `SELECT u.id, u.email, u.role, u.full_name, u.organization_id, u.created_at
                  FROM sessions s 
                  JOIN users u ON s.user_id = u.id 
                  WHERE s.session_token = $1 
@@ -57,6 +57,7 @@ export class InsForgeJwtAdapter implements AuthAdapter {
                 id: data.user.id,
                 email: data.user.email,
                 full_name: data.user.profile?.name || null,
+                organization_id: (sdkUser.organization_id as string) || 'default_org',
                 role: (sdkUser.role as UserRole) || UserRole.COMMUNITY_MEMBER,
                 created_at: data.user.createdAt
             } as User;

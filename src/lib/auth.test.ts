@@ -76,8 +76,9 @@ describe('Authentication Flow Integration', () => {
             id: '1',
             email: 'test@masjid.local',
             role: UserRole.IMAM,
-            full_name: 'Test Imam'
-        };
+            full_name: 'Test User',
+            organization_id: 'org_123'
+            };
 
         it('returns true if user has one of the allowed roles', () => {
             expect(hasRole(mockUser, [UserRole.IMAM, UserRole.SUPER_ADMIN])).toBe(true);

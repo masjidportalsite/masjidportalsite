@@ -1,57 +1,25 @@
-import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
 import React from 'react';
+import { requireAuth } from '@/lib/auth';
+import { getTenantContext } from '@/services/core/tenant';
+import { AnalyticsService, DetailedAnalytics } from '@/services/analytics.service';
 
-interface Stats {
-    totalVolume: number;
-    totalPayments: number;
-    totalMembers: number;
-    upcomingEvents: number;
-    categories: { name: string; value: number }[];
-    trendPoints: { x: number; y: number; amount: number; time: string }[];
-    polylinePoints: string;
-}
-
-async function getStats(): Promise<Stats> {
-    const empty: Stats = {
-        totalVolume: 0, totalPayments: 0, totalMembers: 0, upcomingEvents: 0,
-        categories: [], trendPoints: [], polylinePoints: ''
+async function getStats(): Promise<DetailedAnalytics> {
+    const user = await requireAuth();
+    const context = getTenantContext(user);
+    const analyticsService = new AnalyticsService(context);
+    
+    const result = await analyticsService.getDetailedAnalytics();
+    
+    return result.data || {
+        totalVolume: 0,
+        totalPayments: 0,
+        totalMembers: 0,
+        upcomingEvents: 0,
+        categories: [],
+        trendPoints: [],
+        polylinePoints: ''
     };
-
-    try {
-        const [statsRes, categoryRes, membersRes, eventsRes, trendsRes] = await Promise.all([
-            pool.query(`SELECT COALESCE(SUM(amount), 0) as total_volume, COUNT(id) as total_payments FROM donations WHERE status = 'successful'`),
-            pool.query(`SELECT type, COALESCE(SUM(amount), 0) as amount FROM donations WHERE status = 'successful' GROUP BY type`),
-            pool.query(`SELECT COUNT(id) as count FROM users`),
-            pool.query(`SELECT COUNT(id) as count FROM events WHERE start_time >= NOW()`),
-            pool.query(`SELECT amount, type, created_at FROM donations WHERE status = 'successful' ORDER BY created_at ASC LIMIT 10`)
-        ]);
-
-        const categoriesRaw = categoryRes.rows;
-        const categories = ['zakat', 'sadaqah', 'general', 'campaign'].map(type => {
-            const row = categoriesRaw.find(r => r.type === type);
-            return { name: type.charAt(0).toUpperCase() + type.slice(1), value: row ? Number(row.amount) : 0 };
-        });
-
-        const trendRows = trendsRes.rows;
-        const maxTrendAmount = Math.max(...trendRows.map(r => Number(r.amount)), 100);
-        const trendPoints = trendRows.map((row, idx) => {
-            const x = trendRows.length > 1 ? (idx / (trendRows.length - 1)) * 500 : 250;
-            const y = 180 - (Number(row.amount) / maxTrendAmount) * 130 - 20;
-            return { x, y, amount: Number(row.amount), time: new Date(row.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) };
-        });
-        const polylinePoints = trendPoints.map(p => `${p.x},${p.y}`).join(' ');
-
-        return {
-            totalVolume: Number(statsRes.rows[0]?.total_volume || 0),
-            totalPayments: Number(statsRes.rows[0]?.total_payments || 0),
-            totalMembers: Number(membersRes.rows[0]?.count || 0),
-            upcomingEvents: Number(eventsRes.rows[0]?.count || 0),
-            categories, trendPoints, polylinePoints
-        };
-    } catch {
-        return empty;
-    }
 }
 
 export default async function AnalyticsPage() {

@@ -1,66 +1,31 @@
-import pool from '@/lib/db';
 import React from 'react';
+import { requireAuth } from '@/lib/auth';
+import { getTenantContext } from '@/services/core/tenant';
+import { AnalyticsService, DashboardStats, EngagementTrend } from '@/services/analytics.service';
 
-interface StatData {
-    totalMembers: number;
-    monthlyDonations: number;
-    nextEvent: { id: number; title: string; capacity: number; start_time: string } | null;
-    eventCapacityLabel: string;
-    activeVolunteers: number;
-}
+async function getDashboardData(): Promise<{ stats: DashboardStats; trends: EngagementTrend[] }> {
+    const user = await requireAuth();
+    const context = getTenantContext(user);
+    const analyticsService = new AnalyticsService(context);
+    
+    const [statsRes, trendsRes] = await Promise.all([
+        analyticsService.getDashboardSummary(),
+        analyticsService.getEngagementTrends()
+    ]);
 
-async function getDashboardStats(): Promise<StatData> {
-    try {
-        const [membersRes, donationsRes, eventRes, volunteerRes] = await Promise.all([
-            pool.query('SELECT COUNT(*) as count FROM users'),
-            pool.query(`
-                SELECT COALESCE(SUM(amount), 0) as total 
-                FROM donations 
-                WHERE status = 'successful' 
-                AND extract(month from created_at) = extract(month from current_date)
-                AND extract(year from created_at) = extract(year from current_date)
-            `),
-            pool.query(`
-                SELECT id, title, capacity, start_time 
-                FROM events 
-                WHERE start_time > NOW() 
-                ORDER BY start_time ASC LIMIT 1
-            `),
-            pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM volunteer_shifts`)
-        ]);
-
-        const totalMembers = parseInt(membersRes.rows[0]?.count || '0', 10);
-        const monthlyDonations = parseFloat(donationsRes.rows[0]?.total || '0');
-        const nextEvent = eventRes.rows[0] || null;
-        const activeVolunteers = parseInt(volunteerRes.rows[0]?.count || '0', 10);
-
-        let eventCapacityLabel = 'No capacity set';
-        if (nextEvent?.capacity) {
-            try {
-                const rsvpRes = await pool.query(
-                    'SELECT COUNT(*) as count FROM event_registrations WHERE event_id = $1',
-                    [nextEvent.id]
-                );
-                const rsvpCount = parseInt(rsvpRes.rows[0]?.count || '0', 10);
-                const percentage = Math.round((rsvpCount / nextEvent.capacity) * 100);
-                eventCapacityLabel = `${percentage}% filled (${rsvpCount}/${nextEvent.capacity})`;
-            } catch {
-                eventCapacityLabel = `Capacity: ${nextEvent.capacity}`;
-            }
-        }
-
-        return { totalMembers, monthlyDonations, nextEvent, eventCapacityLabel, activeVolunteers };
-    } catch (error) {
-        console.error('[Dashboard] Failed to fetch real-time statistics:', error);
-        // Fail safely by returning empty states rather than misleading 'investor-ready' fake data.
-        return { 
-            totalMembers: 0, 
-            monthlyDonations: 0, 
-            nextEvent: null, 
-            eventCapacityLabel: 'Data temporarily unavailable', 
-            activeVolunteers: 0 
-        };
-    }
+    return { 
+        stats: statsRes.data || {
+            totalMembers: 0,
+            monthlyDonations: 0,
+            activeProgramsCount: 0,
+            pendingApprovalsCount: 0,
+            activeVolunteersCount: 0,
+            avgWeeklyAttendance: 0,
+            nextEvent: null,
+            eventCapacityLabel: 'Data unavailable'
+        }, 
+        trends: trendsRes.data || [] 
+    };
 }
 
 const prayerTimes = [
@@ -77,17 +42,18 @@ const recentActivity = [
     { icon: 'feedback', color: 'text-[#003527]', bg: 'bg-[#003527]/10', title: 'Maintenance Alert', desc: 'Light fixtures in Main Hall reported broken.', time: '3 hours ago', border: 'border-[#bfc9c3]' },
 ];
 
-const chartBars = [
-    { label: 'MON', height: 60, value: '820' },
-    { label: 'TUE', height: 45, value: '610' },
-    { label: 'WED', height: 85, value: '1.1k' },
-    { label: 'THU', height: 100, value: '1.4k' },
-    { label: 'FRI', height: 70, value: '950' },
-    { label: 'SAT', height: 55, value: '740' },
-];
-
 export default async function DashboardPage() {
-    const { totalMembers, monthlyDonations, nextEvent, eventCapacityLabel, activeVolunteers } = await getDashboardStats();
+    const { stats, trends } = await getDashboardData();
+    const { 
+        totalMembers, 
+        monthlyDonations, 
+        nextEvent, 
+        eventCapacityLabel, 
+        activeVolunteersCount: activeVolunteers,
+        activeProgramsCount,
+        pendingApprovalsCount,
+        avgWeeklyAttendance
+    } = stats;
 
     const formattedDonations = new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR' }).format(monthlyDonations);
     const donationGoal = 15000;
@@ -206,7 +172,7 @@ export default async function DashboardPage() {
                         {/* Active Programs */}
                         <div className="glass-card p-5 md:p-6 flex items-center justify-between gap-4">
                             <div>
-                                <h4 className="text-[28px] font-medium text-[#003527] tracking-[-0.01em]">8</h4>
+                                <h4 className="text-[28px] font-medium text-[#003527] tracking-[-0.01em]">{activeProgramsCount}</h4>
                                 <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-[#404944]">Programs Active</p>
                             </div>
                             <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#003527]/10 flex items-center justify-center text-[#003527] flex-shrink-0 shadow-inner">
@@ -217,7 +183,7 @@ export default async function DashboardPage() {
                         {/* Pending Approvals */}
                         <div className="glass-card p-5 md:p-6 flex items-center justify-between gap-4">
                             <div>
-                                <h4 className="text-[28px] font-medium text-[#ba1a1a] tracking-[-0.01em]">12</h4>
+                                <h4 className="text-[28px] font-medium text-[#ba1a1a] tracking-[-0.01em]">{pendingApprovalsCount}</h4>
                                 <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-[#404944]">Require Approval</p>
                             </div>
                             <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#ffdad6]/30 flex items-center justify-center text-[#ba1a1a] flex-shrink-0 shadow-inner">
@@ -239,7 +205,7 @@ export default async function DashboardPage() {
                         {/* Weekly Attendance */}
                         <div className="glass-card p-5 md:p-6 flex items-center justify-between gap-4">
                             <div>
-                                <h4 className="text-[28px] font-medium text-[#003527] tracking-[-0.01em]">850</h4>
+                                <h4 className="text-[28px] font-medium text-[#003527] tracking-[-0.01em]">{avgWeeklyAttendance}</h4>
                                 <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-[#404944]">Avg. Weekly Attendance</p>
                             </div>
                             <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#fed65b]/20 flex items-center justify-center text-[#735c00] flex-shrink-0 shadow-inner">
@@ -253,7 +219,7 @@ export default async function DashboardPage() {
                     <div className="glass-card p-5 md:p-6 w-full overflow-hidden">
                         <h3 className="font-medium text-lg md:text-[24px] text-[#003527] mb-6 tracking-[-0.01em]">Community Engagement Trends</h3>
                         <div className="flex items-end justify-between h-40 md:h-48 px-1 md:px-4 gap-2 md:gap-4">
-                            {chartBars.map((bar, i) => (
+                            {trends.map((bar, i) => (
                                 <div key={bar.label} className="flex-1 flex flex-col items-center gap-2 group w-full">
                                     <span className="text-[9px] md:text-[10px] font-bold text-[#003527] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block">
                                         {bar.value}
@@ -269,7 +235,7 @@ export default async function DashboardPage() {
                             ))}
                         </div>
                         <div className="flex justify-between mt-3 px-1 md:px-4">
-                            {chartBars.map((bar) => (
+                            {trends.map((bar) => (
                                 <span key={bar.label} className="flex-1 text-center text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-[#404944]">{bar.label}</span>
                             ))}
                         </div>

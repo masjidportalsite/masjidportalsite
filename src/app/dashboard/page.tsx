@@ -26,7 +26,7 @@ async function getDashboardStats(): Promise<StatData> {
                 WHERE start_time > NOW() 
                 ORDER BY start_time ASC LIMIT 1
             `),
-            pool.query(`SELECT COUNT(*) as count FROM users WHERE role = 'volunteer'`)
+            pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM volunteer_shifts`)
         ]);
 
         const totalMembers = parseInt(membersRes.rows[0]?.count || '0', 10);
@@ -50,9 +50,16 @@ async function getDashboardStats(): Promise<StatData> {
         }
 
         return { totalMembers, monthlyDonations, nextEvent, eventCapacityLabel, activeVolunteers };
-    } catch {
-        // Fallback demo data injected for investor readiness if DB fails
-        return { totalMembers: 1248, monthlyDonations: 12450, nextEvent: { id: 1, title: 'Weekly Halal Seminar & Youth Engagement', capacity: 150, start_time: new Date(Date.now() + 86400000).toISOString() }, eventCapacityLabel: '87% filled (131/150)', activeVolunteers: 45 };
+    } catch (error) {
+        console.error('[Dashboard] Failed to fetch real-time statistics:', error);
+        // Fail safely by returning empty states rather than misleading 'investor-ready' fake data.
+        return { 
+            totalMembers: 0, 
+            monthlyDonations: 0, 
+            nextEvent: null, 
+            eventCapacityLabel: 'Data temporarily unavailable', 
+            activeVolunteers: 0 
+        };
     }
 }
 
@@ -94,8 +101,8 @@ export default async function DashboardPage() {
         <div className="max-w-[1440px] mx-auto w-full space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out overflow-x-hidden">
 
             {/* ── Welcome Header ────────────────────────────────────────── */}
-            <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
-                <div>
+            <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2 text-center md:text-left">
+                <div className="flex flex-col items-center md:items-start">
                     <h1 className="text-3xl md:text-[48px] font-semibold text-[#003527] leading-tight tracking-[-0.02em]">
                         Masjid Al-Noor Central
                     </h1>
@@ -103,7 +110,7 @@ export default async function DashboardPage() {
                         A digital sanctuary for the community leaders.
                     </p>
                 </div>
-                <div className="text-left md:text-right mt-2 md:mt-0">
+                <div className="mt-2 md:mt-0">
                     <p className="text-[#735c00] font-medium text-xl md:text-[24px] tracking-[-0.01em]">{islamicDateLabel}</p>
                     <p className="text-[#707974] text-xs font-bold uppercase tracking-widest">{gregLabel}</p>
                 </div>

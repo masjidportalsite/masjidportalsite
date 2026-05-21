@@ -1,28 +1,18 @@
 import { revalidatePath } from 'next/cache';
-import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-interface Event {
-    id: number;
-    title: string;
-    description: string | null;
-    start_time: string;
-    end_time: string | null;
-    location: string | null;
-    capacity: number | null;
-}
+import { requireAuth } from '@/lib/auth';
+import { getTenantContext } from '@/services/core/tenant';
+import { EventService, Event } from '@/services/event.service';
 
 async function getEvents(): Promise<Event[]> {
-    try {
-        const res = await pool.query(
-            'SELECT id, title, description, start_time, end_time, location, capacity FROM events ORDER BY start_time ASC'
-        );
-        return res.rows;
-    } catch {
-        return [];
-    }
+    const user = await requireAuth();
+    const context = getTenantContext(user);
+    const eventService = new EventService(context);
+    
+    const result = await eventService.getEvents();
+    return result.data || [];
 }
 
 export default async function EventsPage() {
@@ -30,6 +20,10 @@ export default async function EventsPage() {
 
     async function createEvent(formData: FormData) {
         'use server';
+        const user = await requireAuth();
+        const context = getTenantContext(user);
+        const eventService = new EventService(context);
+
         const title = formData.get('title') as string;
         const description = formData.get('description') as string;
         const location = formData.get('location') as string;
@@ -38,14 +32,18 @@ export default async function EventsPage() {
 
         if (!title || !startTime) return;
 
-        const endTime = new Date(new Date(startTime).getTime() + 2 * 60 * 60 * 1000).toISOString();
+        const result = await eventService.createEvent({
+            title,
+            description,
+            location,
+            capacity,
+            startTime
+        });
 
-        try {
-            await pool.query(
-                'INSERT INTO events (title, description, start_time, end_time, location, capacity) VALUES ($1, $2, $3, $4, $5, $6)',
-                [title, description || null, startTime, endTime, location || null, Math.max(1, capacity || 100)]
-            );
-        } catch { /* handle gracefully */ }
+        if (result.error) {
+            console.error('[EventsPage] Failed to create event:', result.error.message);
+        }
+
         revalidatePath('/dashboard/events');
     }
 

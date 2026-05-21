@@ -1,58 +1,60 @@
 import { revalidatePath } from 'next/cache';
-import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { requireAuth } from '@/lib/auth';
+import { getTenantContext } from '@/services/core/tenant';
+import { DonationService, Donation } from '@/services/donation.service';
+import { UserService, UserSummary } from '@/services/user.service';
 
-interface Donation {
-    id: number;
-    amount: number;
-    currency: string;
-    status: string;
-    type: string;
-    created_at: string;
-    donor_name: string | null;
-}
-interface User { id: number; full_name: string; email: string; }
+async function getData(): Promise<{ donations: Donation[]; users: UserSummary[]; totalAmount: number }> {
+    const user = await requireAuth();
+    const context = getTenantContext(user);
+    
+    const donationService = new DonationService(context);
+    const userService = new UserService(context);
 
-async function getData(): Promise<{ donations: Donation[]; users: User[] }> {
-    try {
-        const [donRes, usersRes] = await Promise.all([
-            pool.query(`
-                SELECT d.id, d.amount, d.currency, d.status, d.type, d.created_at, u.full_name as donor_name 
-                FROM donations d 
-                LEFT JOIN users u ON d.user_id = u.id 
-                ORDER BY d.created_at DESC LIMIT 50
-            `),
-            pool.query('SELECT id, full_name, email FROM users ORDER BY full_name ASC')
-        ]);
-        return { donations: donRes.rows, users: usersRes.rows };
-    } catch {
-        return { donations: [], users: [] };
-    }
+    const [donRes, usersRes, volumeRes] = await Promise.all([
+        donationService.getRecentDonations(),
+        userService.getOrganizationUsers(),
+        donationService.getTotalDonationVolume()
+    ]);
+
+    return { 
+        donations: donRes.data || [], 
+        users: usersRes.data || [],
+        totalAmount: volumeRes.data || 0
+    };
 }
 
 export default async function DonationsPage() {
-    const { donations, users } = await getData();
+    const { donations, users, totalAmount } = await getData();
 
-    const totalAmount = donations.reduce((sum, d) => sum + Number(d.amount), 0);
     const campaignTarget = 50000;
     const progressPercentage = Math.min(Math.round((totalAmount / campaignTarget) * 100), 100);
 
     async function recordDonation(formData: FormData) {
         'use server';
+        const user = await requireAuth();
+        const context = getTenantContext(user);
+        const donationService = new DonationService(context);
+
         const userId = formData.get('userId') as string;
         const amount = parseFloat(formData.get('amount') as string);
         const type = formData.get('type') as string;
 
         if (!userId || isNaN(amount) || amount <= 0) return;
 
-        try {
-            await pool.query(
-                'INSERT INTO donations (user_id, amount, type, status) VALUES ($1, $2, $3, $4)',
-                [userId, amount, type || 'general', 'successful']
-            );
-        } catch { /* handle gracefully */ }
+        const result = await donationService.recordDonation({
+            userId,
+            amount,
+            type
+        });
+
+        if (result.error) {
+            console.error('[DonationsPage] Failed to record donation:', result.error.message);
+        }
+
         revalidatePath('/dashboard/donations');
     }
 

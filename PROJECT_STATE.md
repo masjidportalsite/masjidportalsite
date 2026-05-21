@@ -15,6 +15,6 @@
 - Validated all 17 static routes for correct generation.
 
 ## Current Focus
-- Stabilization Audit completion.
-- Technical Debt documentation.
+- Phase 1 Migration: Abstracting raw SQL into domain Services.
+- Implementation of server-side RBAC enforcement.
 - Mobile-first responsiveness validation across all dashboard sub-routes.

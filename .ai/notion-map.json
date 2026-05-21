@@ -1,0 +1,50 @@
+{
+  "Bug Tracker": {
+    "id": "a4d2a357-f0d7-4516-98f4-02b3e8017b5d",
+    "type": "child_database"
+  },
+  "Pending Tasks": {
+    "id": "af356ad0-7585-4b0a-b420-fc4d9b48cc56",
+    "type": "child_database"
+  },
+  "System Architecture": {
+    "id": "366ecf3f-96a0-818f-bf47-da178ff2440b",
+    "type": "child_page"
+  },
+  "Frontend Development": {
+    "id": "366ecf3f-96a0-8167-a1e9-d438e8317be8",
+    "type": "child_page"
+  },
+  "Backend Integration": {
+    "id": "366ecf3f-96a0-81fd-b4a5-f45be07cb082",
+    "type": "child_page"
+  },
+  "Vercel Deployment": {
+    "id": "366ecf3f-96a0-81fe-b95c-cb4a43271759",
+    "type": "child_page"
+  },
+  "Environment Variables": {
+    "id": "366ecf3f-96a0-81cc-8711-e98abcd7fdac",
+    "type": "child_page"
+  },
+  "AI Operating Rules": {
+    "id": "366ecf3f-96a0-811f-afcf-feb11b74896c",
+    "type": "child_page"
+  },
+  "Project Overview": {
+    "id": "366ecf3f-96a0-81dc-a595-d00c75dd5cbc",
+    "type": "child_page"
+  },
+  "Feature Requests": {
+    "id": "069cd1bb-5991-41f1-acf2-741188b788c2",
+    "type": "child_database"
+  },
+  "Deployment History": {
+    "id": "513ea7f5-21a9-440b-a4ce-b4ab8acba403",
+    "type": "child_database"
+  },
+  "AI Session Logs": {
+    "id": "2a88fc34-1bce-4d0a-a1e4-21f2bcf50bb0",
+    "type": "child_database"
+  }
+}

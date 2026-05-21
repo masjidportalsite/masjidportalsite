@@ -13,8 +13,9 @@
 - Enhanced `DashboardNav` with mobile-first tactile feedback.
 - Optimized Dashboard header centering for small screens.
 - Validated all 17 static routes for correct generation.
+- Enforced Database-level Multi-tenancy (RLS) on all core tables.
 
 ## Current Focus
-- Phase 1 Migration: Abstracting raw SQL into domain Services.
-- Implementation of server-side RBAC enforcement.
-- Mobile-first responsiveness validation across all dashboard sub-routes.
+- Phase 3 Consolidation: Removing redundant filters and legacy auth adapters.
+- Performance monitoring of SDK vs SQL fallback.
+- Mobile-first responsiveness validation for new bento-grid components.

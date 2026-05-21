@@ -5,13 +5,17 @@ import { OrganizationService } from "@/services/organization.service";
 
 export async function GET() {
     try {
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        const insforgeToken = cookieStore.get('insforge_session')?.value;
+
         const user = await getSession();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const context = getTenantContext(user);
-        const orgService = new OrganizationService(context);
+        const orgService = new OrganizationService(context, insforgeToken);
         
         const result = await orgService.getBrandingSettings();
         
@@ -28,6 +32,10 @@ export async function GET() {
 
 export async function PUT(request: Request) {
     try {
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        const insforgeToken = cookieStore.get('insforge_session')?.value;
+
         const user = await getSession();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -37,7 +45,7 @@ export async function PUT(request: Request) {
         const { id, organization_id, ...settings } = body;
 
         const context = getTenantContext(user);
-        const orgService = new OrganizationService(context);
+        const orgService = new OrganizationService(context, insforgeToken);
 
         const result = await orgService.updateBrandingSettings(settings);
 

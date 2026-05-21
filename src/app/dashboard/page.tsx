@@ -4,9 +4,13 @@ import { getTenantContext } from '@/services/core/tenant';
 import { AnalyticsService, DashboardStats, EngagementTrend } from '@/services/analytics.service';
 
 async function getDashboardData(): Promise<{ stats: DashboardStats; trends: EngagementTrend[] }> {
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const insforgeToken = cookieStore.get('insforge_session')?.value;
+
     const user = await requireAuth();
     const context = getTenantContext(user);
-    const analyticsService = new AnalyticsService(context);
+    const analyticsService = new AnalyticsService(context, insforgeToken);
     
     const [statsRes, trendsRes] = await Promise.all([
         analyticsService.getDashboardSummary(),

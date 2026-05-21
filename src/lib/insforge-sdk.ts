@@ -18,11 +18,13 @@ export const insforge = createClient({
 });
 
 // Factory for server-side usage (Server Actions, API Routes, Middleware)
-export const createInsForgeServerClient = (accessToken?: string) => {
+export const createInsForgeServerClient = (accessToken?: string, organizationId?: string) => {
     return createClient({
         baseUrl: baseUrl || '',
         anonKey: anonKey || '',
         isServerMode: true,
-        edgeFunctionToken: accessToken
+        edgeFunctionToken: accessToken,
+        // Preparation for RLS: Inject organization context into headers
+        headers: organizationId ? { 'x-insforge-organization-id': organizationId } : undefined
     });
 };

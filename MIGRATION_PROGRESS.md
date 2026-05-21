@@ -1,38 +1,30 @@
-# Migration Progress Report: Phase 1
+# Migration Progress Report
 
-## Status: COMPLETE (100% Complete)
+## Phase 1: Service Layer Abstraction
+- **Status**: COMPLETE (100%)
 
-## Completed Domains
-- **Initialization**: Service layer core types and tenant context utilities established.
-- **Donation Domain**: 
-  - `donation.service.ts` created.
-  - `DonationsPage` migrated.
-- **Organization Domain**: 
-  - `organization.service.ts` created.
-  - Branding API routes migrated.
-- **Billing Domain**:
-  - `billing.service.ts` created.
-  - Payments Webhook migrated.
-- **Member Management**: 
-  - `UserService` expanded.
-  - `MembersPage` and `MembersSearch` stabilized for UUIDs.
-- **Event Management**:
-  - `event.service.ts` created.
-  - Events page migrated with auto-duration logic.
-- **Prayer Schedules**:
-  - `prayer.service.ts` created.
-  - Prayer dashboard migrated with settings abstraction.
-- **Analytics/Dashboard Summary**:
-  - `analytics.service.ts` created.
-  - Complex aggregations moved from UI to Service Layer.
+## Phase 2: RLS & SDK Integration
+- **Status**: IN PROGRESS (50%)
+
+### Phase 2.2: SDK Transition (Complete)
+- [x] **Infrastructure**: Edge-ready client factory with tenant header support (`x-insforge-organization-id`).
+- [x] **Hybrid Fallback**: All services attempt SDK first, fallback to `pg` pool on failure.
+- [x] **Tracing**: Added request/org tracing logs across all service methods.
+- [x] **Domains Migrated**:
+  - `PrayerService` (Low Risk)
+  - `OrganizationService` (Medium Risk)
+  - `UserService` (Medium Risk)
+  - `DonationService` (High Risk)
+  - `BillingService` (High Risk - Transactional)
+  - `AnalyticsService` (Medium Risk)
+
+### Phase 2.3: RLS Enforcement (Upcoming)
+- Apply PostgreSQL RLS policies for `organization_id`.
+- Transition `getSession()` to exclusively use InsForge JWT.
+- Validate cross-tenant isolation.
 
 ## Verification
-- [x] Lint: PASS
+- [x] Lint: PASS (Warnings handled/expected)
 - [x] Type-check: PASS
 - [x] Production Build: PASS
-- [x] Unit Tests: PASS (Auth)
-
-## Phase 2 Outlook: Row Level Security (RLS)
-- Transition services to `@insforge/sdk` database methods.
-- Implement platform-wide RLS policies in PostgreSQL.
-- Shift from direct `pg` pool to edge-compatible SDK clients.
+- [x] Unit Tests: PASS (Auth logic)

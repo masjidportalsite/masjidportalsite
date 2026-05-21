@@ -7,9 +7,13 @@ import { getTenantContext } from '@/services/core/tenant';
 import { EventService, Event } from '@/services/event.service';
 
 async function getEvents(): Promise<Event[]> {
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const insforgeToken = cookieStore.get('insforge_session')?.value;
+
     const user = await requireAuth();
     const context = getTenantContext(user);
-    const eventService = new EventService(context);
+    const eventService = new EventService(context, insforgeToken);
     
     const result = await eventService.getEvents();
     return result.data || [];
@@ -20,9 +24,13 @@ export default async function EventsPage() {
 
     async function createEvent(formData: FormData) {
         'use server';
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        const insforgeToken = cookieStore.get('insforge_session')?.value;
+
         const user = await requireAuth();
         const context = getTenantContext(user);
-        const eventService = new EventService(context);
+        const eventService = new EventService(context, insforgeToken);
 
         const title = formData.get('title') as string;
         const description = formData.get('description') as string;

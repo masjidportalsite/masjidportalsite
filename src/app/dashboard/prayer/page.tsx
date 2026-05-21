@@ -23,9 +23,13 @@ const WEEKLY_SCHEDULE = [
 ];
 
 async function getSalatSettings(): Promise<PrayerSettings> {
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const insforgeToken = cookieStore.get('insforge_session')?.value;
+
     const user = await requireAuth();
     const context = getTenantContext(user);
-    const prayerService = new PrayerService(context);
+    const prayerService = new PrayerService(context, insforgeToken);
     
     const result = await prayerService.getPrayerSettings();
     return result.data || {} as PrayerSettings;

@@ -1,4 +1,6 @@
 import pool from '@/lib/db';
+import { createInsForgeServerClient } from '@/lib/insforge-sdk';
+import { TenantContext } from './core/tenant';
 import { ServiceResult, createSuccess, createError } from './core/types';
 
 /**
@@ -7,11 +9,19 @@ import { ServiceResult, createSuccess, createError } from './core/types';
  * but must ensure data integrity via record-level tenant validation.
  */
 export class BillingService {
+  private sdk;
+
+  constructor(private context?: TenantContext, accessToken?: string) {
+    this.sdk = createInsForgeServerClient(accessToken, context?.organizationId);
+  }
+
   /**
    * Processes a successful payment and generates a receipt.
    * This is a sensitive operation and uses a database transaction.
    */
   async processSuccessfulPayment(donationId: number, receiptUrl: string): Promise<ServiceResult<{ success: boolean }>> {
+    console.log(`[BillingService.processSuccessfulPayment] Trace: donationId=${donationId}`);
+    
     const client = await pool.connect();
     try {
       await client.query('BEGIN');

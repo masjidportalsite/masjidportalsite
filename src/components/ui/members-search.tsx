@@ -2,12 +2,14 @@
 
 import { useState, useMemo } from 'react';
 
+import { UserRole } from '@/types/auth';
+
 interface Member {
-    id: number;
-    full_name: string;
+    id: string;
+    full_name: string | null;
     email: string;
     phone_number: string | null;
-    role: string | null;
+    role: UserRole | string | null;
     created_at: string;
 }
 
@@ -34,7 +36,7 @@ export function MembersSearch({ members }: { members: Member[] }) {
 
     const filtered = useMemo(() => {
         return members.filter(m => {
-            const matchesSearch = !search || [m.full_name, m.email, m.phone_number || ''].some(v => v.toLowerCase().includes(search.toLowerCase()));
+            const matchesSearch = !search || [m.full_name || '', m.email, m.phone_number || ''].some(v => v.toLowerCase().includes(search.toLowerCase()));
             const matchesRole = roleFilter === 'all' || (m.role || 'community_member').replace(/_/g, ' ') === roleFilter;
             return matchesSearch && matchesRole;
         });

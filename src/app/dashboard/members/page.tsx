@@ -1,28 +1,20 @@
 import { revalidatePath } from 'next/cache';
-import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MembersSearch } from '@/components/ui/members-search';
+import { requireAuth } from '@/lib/auth';
+import { getTenantContext } from '@/services/core/tenant';
+import { UserService, UserSummary } from '@/services/user.service';
+import { UserRole } from '@/types/auth';
 
-interface Member {
-    id: number;
-    full_name: string;
-    email: string;
-    phone_number: string | null;
-    role: string | null;
-    created_at: string;
-}
-
-async function getMembers(): Promise<Member[]> {
-    try {
-        const res = await pool.query(
-            'SELECT id, full_name, email, phone_number, role, created_at FROM users ORDER BY created_at DESC'
-        );
-        return res.rows;
-    } catch {
-        return [];
-    }
+async function getMembers(): Promise<UserSummary[]> {
+    const user = await requireAuth();
+    const context = getTenantContext(user);
+    const userService = new UserService(context);
+    
+    const result = await userService.getOrganizationUsers();
+    return result.data || [];
 }
 
 export default async function MembersPage() {
@@ -30,21 +22,28 @@ export default async function MembersPage() {
 
     async function addMember(formData: FormData) {
         'use server';
+        const user = await requireAuth();
+        const context = getTenantContext(user);
+        const userService = new UserService(context);
+
         const fullName = formData.get('fullName') as string;
         const email = formData.get('email') as string;
         const phone = formData.get('phone') as string;
-        const role = formData.get('role') as string;
+        const role = formData.get('role') as UserRole;
 
         if (!fullName || !email) return;
 
-        try {
-            await pool.query(
-                'INSERT INTO users (full_name, email, phone_number, role) VALUES ($1, $2, $3, $4)',
-                [fullName, email, phone || null, role || 'community_member']
-            );
-        } catch {
-            // Could not insert — likely duplicate email
+        const result = await userService.addMember({
+            fullName,
+            email,
+            phoneNumber: phone,
+            role
+        });
+
+        if (result.error) {
+            console.error('[MembersPage] Failed to add member:', result.error.message);
         }
+
         revalidatePath('/dashboard/members');
     }
 

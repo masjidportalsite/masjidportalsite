@@ -1,5 +1,7 @@
-import pool from '@/lib/db';
 import { Card } from '@/components/ui/card';
+import { requireAuth } from '@/lib/auth';
+import { getTenantContext } from '@/services/core/tenant';
+import { PrayerService, PrayerSettings } from '@/services/prayer.service';
 
 const DAILY_PRAYER_TIMES = [
     { name: 'Fajr', arabic: 'الفجر', icon: 'wb_twilight', time: '05:12 AM', iqamah: '05:22 AM', active: false },
@@ -20,16 +22,13 @@ const WEEKLY_SCHEDULE = [
     { day: 'Sunday', date: 'May 25', fajr: '05:08', dhuhr: '12:45', asr: '04:15', maghrib: '07:04', isha: '08:18' },
 ];
 
-async function getSalatSettings() {
-    try {
-        const res = await pool.query("SELECT key, value FROM settings WHERE key LIKE 'prayer_%' LIMIT 20");
-        return res.rows.reduce((acc: Record<string, string>, row: { key: string; value: string }) => {
-            acc[row.key] = row.value;
-            return acc;
-        }, {});
-    } catch {
-        return {} as Record<string, string>;
-    }
+async function getSalatSettings(): Promise<PrayerSettings> {
+    const user = await requireAuth();
+    const context = getTenantContext(user);
+    const prayerService = new PrayerService(context);
+    
+    const result = await prayerService.getPrayerSettings();
+    return result.data || {} as PrayerSettings;
 }
 
 export default async function PrayerTimesPage() {

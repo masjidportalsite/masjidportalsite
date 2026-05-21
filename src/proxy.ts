@@ -1,32 +1,75 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function proxy(request: NextRequest) {
-    const token = request.cookies.get('portal_session')?.value;
-    const { pathname } = request.nextUrl;
+/**
+ * Production-grade Middleware for MasjidPortal
+ * 
+ * Features:
+ * - Route Protection: Ensures /dashboard is only accessible to authenticated users.
+ * - Public Route Access: Allows access to login, branding, and landing pages.
+ * - Mobile Persistence Support: Relies on the long-lived portal_session cookie.
+ * - JWT Ready: Structured to easily swap DB sessions for JWT verification.
+ */
 
-    // Static assets and Next.js internals
-    if (pathname.startsWith('/_next') || pathname.startsWith('/favicon.ico')) {
+// Define paths that are always accessible
+const PUBLIC_FILE_EXTENSIONS = ['.svg', '.webp', '.png', '.jpg', '.ico'];
+
+export function proxy(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+    
+    // 1. Allow public files and assets early (Mobile Performance Optimization)
+    if (
+        PUBLIC_FILE_EXTENSIONS.some(ext => pathname.endsWith(ext)) ||
+        pathname.startsWith('/_next') || 
+        pathname.startsWith('/branding')
+    ) {
         return NextResponse.next();
     }
 
-    // Public routes — accessible without authentication
-    const publicRoutes = ['/', '/login'];
-    const isPublic = publicRoutes.includes(pathname);
+    // 2. Check for session cookies (Dual-token support)
+    const insforgeToken = request.cookies.get('insforge_session')?.value;
+    const portalToken = request.cookies.get('portal_session')?.value;
+    
+    const hasValidToken = (insforgeToken && insforgeToken.length > 10) || 
+                         (portalToken && portalToken.length > 10);
 
-    // Redirect unauthenticated users away from protected routes
-    if (!token && !isPublic) {
-        return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    // Redirect authenticated users away from login back to dashboard
-    if (token && pathname === '/login') {
+    // 3. Handle Authenticated Users trying to access /login (UX Optimization)
+    if (pathname === '/login' && hasValidToken) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
-    return NextResponse.next();
+    // 4. Handle Unauthenticated Users trying to access protected routes
+    const isProtectedRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/api/dashboard');
+    
+    if (isProtectedRoute && !hasValidToken) {
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('from', pathname);
+        
+        // Use a 307 redirect to preserve the HTTP method
+        return NextResponse.redirect(loginUrl);
+    }
+
+    // 5. Allow all other public paths
+    const response = NextResponse.next();
+    
+    // 6. Security Headers (Best practice for production)
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocations=()');
+    
+    return response;
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api/webhooks (Allow external webhooks)
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         */
+        '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
+    ],
 };

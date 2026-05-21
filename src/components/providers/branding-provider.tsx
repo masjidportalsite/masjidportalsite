@@ -62,7 +62,7 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
         document.getElementsByTagName("head")[0].appendChild(link);
     };
 
-    const fetchSettings = async () => {
+    const fetchSettings = React.useCallback(async () => {
         try {
             setIsLoading(true);
             const res = await fetch("/api/branding");
@@ -78,11 +78,11 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchSettings();
-    }, []);
+    }, [fetchSettings]);
 
     const updateSettings = (newSettings: Partial<BrandingSettings>) => {
         setSettings((prev) => {

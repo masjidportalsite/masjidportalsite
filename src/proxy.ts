@@ -7,8 +7,7 @@ import type { NextRequest } from 'next/server';
  * Features:
  * - Route Protection: Ensures /dashboard is only accessible to authenticated users.
  * - Public Route Access: Allows access to login, branding, and landing pages.
- * - Mobile Persistence Support: Relies on the long-lived portal_session cookie.
- * - JWT Ready: Structured to easily swap DB sessions for JWT verification.
+ * - Mobile Persistence Support: Relies on the custom portal_session cookie.
  */
 
 // Define paths that are always accessible
@@ -26,12 +25,9 @@ export function proxy(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // 2. Check for session cookies (Dual-token support)
-    const insforgeToken = request.cookies.get('insforge_session')?.value;
+    // 2. Check for official portal session cookie
     const portalToken = request.cookies.get('portal_session')?.value;
-    
-    const hasValidToken = (insforgeToken && insforgeToken.length > 10) || 
-                         (portalToken && portalToken.length > 10);
+    const hasValidToken = portalToken && portalToken.length > 10;
 
     // 3. Handle Authenticated Users trying to access /login (UX Optimization)
     if (pathname === '/login' && hasValidToken) {

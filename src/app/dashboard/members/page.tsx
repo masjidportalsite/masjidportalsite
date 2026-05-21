@@ -9,13 +9,9 @@ import { UserService, UserSummary } from '@/services/user.service';
 import { UserRole } from '@/types/auth';
 
 async function getMembers(): Promise<UserSummary[]> {
-    const { cookies } = await import('next/headers');
-    const cookieStore = await cookies();
-    const insforgeToken = cookieStore.get('insforge_session')?.value;
-
     const user = await requireAuth();
     const context = getTenantContext(user);
-    const userService = new UserService(context, insforgeToken);
+    const userService = new UserService(context);
     
     const result = await userService.getOrganizationUsers();
     return result.data || [];
@@ -26,13 +22,9 @@ export default async function MembersPage() {
 
     async function addMember(formData: FormData) {
         'use server';
-        const { cookies } = await import('next/headers');
-        const cookieStore = await cookies();
-        const insforgeToken = cookieStore.get('insforge_session')?.value;
-
         const user = await requireAuth();
         const context = getTenantContext(user);
-        const userService = new UserService(context, insforgeToken);
+        const userService = new UserService(context);
 
         const fullName = formData.get('fullName') as string;
         const email = formData.get('email') as string;

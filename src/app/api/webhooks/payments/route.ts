@@ -10,11 +10,7 @@ export async function POST(req: Request) {
     const { donation_id, status, receipt_url } = payload;
 
     if (status === 'successful') {
-        const { cookies } = await import('next/headers');
-        const cookieStore = await cookies();
-        const insforgeToken = cookieStore.get('insforge_session')?.value;
-        
-        const billingService = new BillingService(undefined, insforgeToken);
+        const billingService = new BillingService();
         const result = await billingService.processSuccessfulPayment(donation_id, receipt_url);
         
         if (result.error) {

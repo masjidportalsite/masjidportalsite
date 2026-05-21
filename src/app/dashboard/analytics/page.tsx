@@ -5,13 +5,9 @@ import { getTenantContext } from '@/services/core/tenant';
 import { AnalyticsService, DetailedAnalytics } from '@/services/analytics.service';
 
 async function getStats(): Promise<DetailedAnalytics> {
-    const { cookies } = await import('next/headers');
-    const cookieStore = await cookies();
-    const insforgeToken = cookieStore.get('insforge_session')?.value;
-
     const user = await requireAuth();
     const context = getTenantContext(user);
-    const analyticsService = new AnalyticsService(context, insforgeToken);
+    const analyticsService = new AnalyticsService(context);
     
     const result = await analyticsService.getDetailedAnalytics();
     

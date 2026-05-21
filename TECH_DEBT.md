@@ -1,15 +1,12 @@
 # Technical Debt: MasjidPortal
 
 ## High Priority
-- **Data Layer Inconsistency:** Mixing direct `pg` queries with InsForge SDK. (Strategy defined in `DATA_LAYER_STRATEGY.md`)
-- **Component Redundancy:** `glass-card` CSS class in `globals.css` overlaps with `Card` component. (Guardrails defined in `ARCHITECTURE_GUARDRAILS.md`)
-- **RBAC Logic:** Role-based access control is currently "simulated" in the frontend. (Strategy defined in `RBAC_STRATEGY.md`)
+- **RBAC Enforcement**: Server-side validation of roles in the Service Layer is still pending.
+- **Component Redundancy**: `glass-card` CSS class in `globals.css` overlaps with the atomic `Card` component.
 
 ## Medium Priority
-- **Testing Coverage:** Core logic is tested, but UI components and individual dashboard routes lack integration/E2E tests.
-- **Error Handling:** Some dashboard queries lack granular error boundaries or retry logic beyond basic try/catch.
-- **Lint Warnings:** Next.js specific font and lint warnings in `src/app/layout.tsx`.
+- **Testing Coverage**: Integration and E2E tests for dashboard routes are missing.
+- **Error Handling**: Standardize error boundaries across all dashboard sub-routes.
 
 ## Low Priority
-- **Animation Libraries:** Both GSAP and Framer Motion are in `package.json`, but GSAP usage is minimal/absent.
-- **Dead Scripts:** `generate-session-log.js` has unused variables and could be optimized.
+- **Cleanup**: `generate-session-log.js` has unused variables and could be optimized.

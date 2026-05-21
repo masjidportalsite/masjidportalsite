@@ -1,5 +1,4 @@
 import pool from '@/lib/db';
-import { createInsForgeServerClient } from '@/lib/insforge-sdk';
 import { TenantContext } from './core/tenant';
 import { ServiceResult, createSuccess, createError } from './core/types';
 
@@ -9,11 +8,7 @@ import { ServiceResult, createSuccess, createError } from './core/types';
  * but must ensure data integrity via record-level tenant validation.
  */
 export class BillingService {
-  private sdk;
-
-  constructor(private context?: TenantContext, accessToken?: string) {
-    this.sdk = createInsForgeServerClient(accessToken, context?.organizationId);
-  }
+  constructor(private context?: TenantContext) {}
 
   /**
    * Processes a successful payment and generates a receipt.

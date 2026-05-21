@@ -3,7 +3,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import pool from '@/lib/db'
-import { createInsForgeServerClient } from '@/lib/insforge-sdk'
 
 export async function loginAction(state: unknown, formData: FormData) {
     const email = (formData.get('email') as string)?.trim()
@@ -14,28 +13,7 @@ export async function loginAction(state: unknown, formData: FormData) {
     }
 
     try {
-        // 1. Try InsForge Authentication First (Future-Proof Flow)
-        const insforge = createInsForgeServerClient()
-        const { data: insforgeData, error: insforgeError } = await insforge.auth.signInWithPassword({
-            email,
-            password
-        })
-
-        if (!insforgeError && insforgeData?.accessToken) {
-            const cookieStore = await cookies()
-            cookieStore.set('insforge_session', insforgeData.accessToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: 7 * 24 * 60 * 60,
-                path: '/'
-            })
-            redirect('/dashboard')
-        }
-
-        // 2. Fallback to Legacy PostgreSQL Authentication
-        console.log('[Auth] InsForge auth failed, falling back to legacy DB check:', insforgeError?.message)
-        
+        // Primary Flow: Custom PostgreSQL Authentication
         const { rows } = await pool.query('SELECT id, password_hash FROM users WHERE email = $1', [email])
 
         if (rows.length > 0) {

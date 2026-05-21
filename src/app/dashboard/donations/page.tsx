@@ -8,15 +8,11 @@ import { DonationService, Donation } from '@/services/donation.service';
 import { UserService, UserSummary } from '@/services/user.service';
 
 async function getData(): Promise<{ donations: Donation[]; users: UserSummary[]; totalAmount: number }> {
-    const { cookies } = await import('next/headers');
-    const cookieStore = await cookies();
-    const insforgeToken = cookieStore.get('insforge_session')?.value;
-
     const user = await requireAuth();
     const context = getTenantContext(user);
     
-    const donationService = new DonationService(context, insforgeToken);
-    const userService = new UserService(context, insforgeToken);
+    const donationService = new DonationService(context);
+    const userService = new UserService(context);
 
     const [donRes, usersRes, volumeRes] = await Promise.all([
         donationService.getRecentDonations(),
@@ -39,13 +35,9 @@ export default async function DonationsPage() {
 
     async function recordDonation(formData: FormData) {
         'use server';
-        const { cookies } = await import('next/headers');
-        const cookieStore = await cookies();
-        const insforgeToken = cookieStore.get('insforge_session')?.value;
-
         const user = await requireAuth();
         const context = getTenantContext(user);
-        const donationService = new DonationService(context, insforgeToken);
+        const donationService = new DonationService(context);
 
         const userId = formData.get('userId') as string;
         const amount = parseFloat(formData.get('amount') as string);
